@@ -677,6 +677,30 @@ def generate_html(diary_html: str, places: list[dict], timeline: dict) -> str:
                     const eventDate = new Date(event.date).getTime();
                     const rangeWidth = 30 * 24 * 60 * 60 * 1000; // 30 days window
                     slider.noUiSlider.set([eventDate - rangeWidth/2, eventDate + rangeWidth/2]);
+
+                    // For diary events, scroll to related place in text
+                    if (event.type === 'diary' && event.related_places && event.related_places.length > 0) {{
+                        const placeId = event.related_places[0];
+                        const firstMention = document.querySelector(`.location[data-place-id="${{placeId}}"]`);
+                        if (firstMention) {{
+                            // Remove active class from all locations
+                            document.querySelectorAll('.location.active').forEach(el => el.classList.remove('active'));
+                            // Add active class to this location
+                            document.querySelectorAll(`.location[data-place-id="${{placeId}}"]`).forEach(el => el.classList.add('active'));
+                            // Scroll into view with slight delay to let slider update first
+                            setTimeout(() => {{
+                                firstMention.scrollIntoView({{ behavior: 'smooth', block: 'center' }});
+                            }}, 100);
+                            // Also open the marker popup
+                            if (markers[placeId]) {{
+                                const place = places.find(p => p.id === placeId);
+                                if (place) {{
+                                    map.setView([place.lat, place.lng], 9, {{ animate: true }});
+                                    markers[placeId].openPopup();
+                                }}
+                            }}
+                        }}
+                    }}
                 }});
                 eventMarkersContainer.appendChild(dot);
             }}
