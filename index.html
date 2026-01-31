@@ -204,6 +204,21 @@
             color: #2c3e50;
             border-bottom: 2px solid #8b4513;
             padding-bottom: 0.5rem;
+            position: relative;
+        }
+
+        .version-indicator {
+            position: absolute;
+            right: 0;
+            bottom: 0.5rem;
+            font-size: 0.65rem;
+            font-weight: normal;
+            color: #999;
+            font-family: monospace;
+        }
+
+        .version-indicator:hover {
+            color: #666;
         }
 
         .diary-content h2 {
@@ -522,7 +537,7 @@
     <div class="container">
         <div class="diary-panel">
             <div class="diary-content">
-                <h1>Edgar Hopkins' WW2 Diary</h1>
+                <h1>Edgar Hopkins' WW2 Diary<span class="version-indicator" title="Git: 053d8d0 | Built: 2026-01-31T11:24:24Z">053d8d0 (2026-01-31)</span></h1>
 <h2>Last Days in England and My Experiences on the Continent</h2>
 <hr />
 <h3>Dedication</h3>

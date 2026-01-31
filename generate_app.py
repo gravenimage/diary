@@ -9,9 +9,39 @@ timeline slider for filtering by date.
 
 import json
 import re
+import subprocess
+from datetime import datetime, timezone
 from pathlib import Path
 
 import markdown
+
+
+def get_version_info() -> dict:
+    """Get git commit hash and timestamp for version tracking."""
+    try:
+        # Get short commit hash
+        git_hash = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            capture_output=True, text=True, check=True
+        ).stdout.strip()
+
+        # Get commit timestamp
+        git_timestamp = subprocess.run(
+            ["git", "log", "-1", "--format=%cI"],
+            capture_output=True, text=True, check=True
+        ).stdout.strip()
+
+        return {
+            "hash": git_hash,
+            "timestamp": git_timestamp,
+            "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        }
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return {
+            "hash": "unknown",
+            "timestamp": "",
+            "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+        }
 
 
 def load_diary(path: Path) -> str:
@@ -98,10 +128,15 @@ def wrap_locations_in_html(html: str, places: list[dict]) -> str:
     return "".join(parts)
 
 
-def generate_html(diary_html: str, places: list[dict], timeline: dict) -> str:
+def generate_html(diary_html: str, places: list[dict], timeline: dict, version: dict) -> str:
     """Generate the complete HTML application."""
     places_json = json.dumps(places, indent=2)
     timeline_json = json.dumps(timeline, indent=2)
+    version_str = f"{version['hash']} ({version['generated'][:10]})"
+
+    # Inject version indicator into the first h1 tag
+    version_span = f'<span class="version-indicator" title="Git: {version["hash"]} | Built: {version["generated"]}">{version_str}</span>'
+    diary_html = diary_html.replace("</h1>", f"{version_span}</h1>", 1)
 
     return f'''<!DOCTYPE html>
 <html lang="en">
@@ -309,6 +344,21 @@ def generate_html(diary_html: str, places: list[dict], timeline: dict) -> str:
             color: #2c3e50;
             border-bottom: 2px solid #8b4513;
             padding-bottom: 0.5rem;
+            position: relative;
+        }}
+
+        .version-indicator {{
+            position: absolute;
+            right: 0;
+            bottom: 0.5rem;
+            font-size: 0.65rem;
+            font-weight: normal;
+            color: #999;
+            font-family: monospace;
+        }}
+
+        .version-indicator:hover {{
+            color: #666;
         }}
 
         .diary-content h2 {{
@@ -1205,8 +1255,12 @@ def main():
     print("Processing diary text...")
     diary_html = wrap_locations_in_html(diary_html, places)
 
+    print("Getting version info...")
+    version = get_version_info()
+    print(f"  Version: {version['hash']} ({version['generated']})")
+
     print("Generating HTML...")
-    html = generate_html(diary_html, places, timeline)
+    html = generate_html(diary_html, places, timeline, version)
 
     print(f"Writing output to {output_path}...")
     output_path.write_text(html, encoding="utf-8")
