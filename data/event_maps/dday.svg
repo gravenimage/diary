@@ -1,0 +1,28 @@
+<svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <style>
+      .water { fill: #b8d4e8; }
+      .land { fill: #e8e4d9; }
+      .marker { fill: #8b4513; }
+      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }
+      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }
+      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }
+      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }
+      .zone { fill: #c0392b; opacity: 0.2; }
+    </style>
+  </defs>
+  <rect class="water" width="300" height="200"/>
+  <path class="land" d="M0,120 Q30,100 60,110 Q90,95 120,105 Q150,90 180,100 Q210,85 240,95 Q270,80 300,90 L300,200 L0,200 Z"/>
+  <line class="annotation" x1="150" y1="40" x2="150" y2="80" marker-end="url(#arrowhead)"/>
+  <circle class="marker" cx="40" cy="105" r="4"/>
+  <text class="label" x="46" y="109">Utah</text>
+  <circle class="marker" cx="85" cy="100" r="4"/>
+  <text class="label" x="91" y="104">Omaha</text>
+  <circle class="marker" cx="140" cy="95" r="4"/>
+  <text class="label" x="146" y="99">Gold</text>
+  <circle class="marker" cx="195" cy="90" r="4"/>
+  <text class="label" x="201" y="94">Juno</text>
+  <circle class="marker" cx="250" cy="85" r="4"/>
+  <text class="label" x="256" y="89">Sword</text>
+  <text class="title" x="10" y="15">D-Day Landings</text>
+</svg>

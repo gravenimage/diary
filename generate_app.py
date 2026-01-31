@@ -423,6 +423,160 @@ def generate_html(diary_html: str, places: list[dict], timeline: dict) -> str:
             transition: opacity 0.3s ease;
         }}
 
+        /* Event Detail Panel Styles */
+        .event-panel {{
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 380px;
+            height: 100vh;
+            background: #faf8f5;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }}
+
+        .event-panel.open {{
+            transform: translateX(0);
+        }}
+
+        .event-panel-header {{
+            padding: 1rem 1.5rem;
+            background: #8b4513;
+            color: white;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }}
+
+        .event-panel-close {{
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }}
+
+        .event-panel-close:hover {{
+            opacity: 1;
+        }}
+
+        .event-panel-title {{
+            font-family: Georgia, serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0;
+            padding-right: 1rem;
+            line-height: 1.3;
+        }}
+
+        .event-panel-content {{
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }}
+
+        .event-panel-date {{
+            font-size: 0.95rem;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #ddd;
+        }}
+
+        .event-panel-map {{
+            margin-bottom: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #b8d4e8;
+        }}
+
+        .event-panel-map svg {{
+            width: 100%;
+            height: auto;
+            display: block;
+        }}
+
+        .event-panel-summary {{
+            font-family: Georgia, serif;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }}
+
+        .event-panel-facts {{
+            margin: 0 0 1.5rem 0;
+            padding: 0;
+            list-style: none;
+        }}
+
+        .event-panel-facts li {{
+            font-size: 0.9rem;
+            color: #444;
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }}
+
+        .event-panel-facts li:last-child {{
+            border-bottom: none;
+        }}
+
+        .event-panel-facts li::before {{
+            content: "\\2022";
+            color: #8b4513;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }}
+
+        .event-panel-source {{
+            display: inline-block;
+            font-size: 0.9rem;
+            color: #2980b9;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid #2980b9;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }}
+
+        .event-panel-source:hover {{
+            background: #2980b9;
+            color: white;
+        }}
+
+        .event-panel-overlay {{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 999;
+        }}
+
+        .event-panel-overlay.open {{
+            opacity: 1;
+            visibility: visible;
+        }}
+
         @media (max-width: 900px) {{
             .container {{
                 flex-direction: column;
@@ -447,10 +601,29 @@ def generate_html(diary_html: str, places: list[dict], timeline: dict) -> str:
                 text-align: center;
                 margin-top: 0.5rem;
             }}
+
+            .event-panel {{
+                width: 100%;
+            }}
         }}
     </style>
 </head>
 <body>
+    <div class="event-panel-overlay" id="event-panel-overlay"></div>
+    <div class="event-panel" id="event-panel">
+        <div class="event-panel-header">
+            <h2 class="event-panel-title" id="event-panel-title"></h2>
+            <button class="event-panel-close" id="event-panel-close">&times;</button>
+        </div>
+        <div class="event-panel-content">
+            <div class="event-panel-date" id="event-panel-date"></div>
+            <div class="event-panel-map" id="event-panel-map"></div>
+            <div class="event-panel-summary" id="event-panel-summary"></div>
+            <ul class="event-panel-facts" id="event-panel-facts"></ul>
+            <a class="event-panel-source" id="event-panel-source" target="_blank">Read more on Wikipedia</a>
+        </div>
+    </div>
+
     <div class="container">
         <div class="diary-panel">
             <div class="diary-content">
@@ -664,6 +837,78 @@ def generate_html(diary_html: str, places: list[dict], timeline: dict) -> str:
             step: 24 * 60 * 60 * 1000 // 1 day
         }});
 
+        // Event panel functions
+        const eventPanel = document.getElementById('event-panel');
+        const eventPanelOverlay = document.getElementById('event-panel-overlay');
+        const eventPanelClose = document.getElementById('event-panel-close');
+
+        function showEventPanel(event) {{
+            // Populate panel content
+            document.getElementById('event-panel-title').textContent = event.name;
+
+            // Format date
+            const dateStr = event.end_date
+                ? `${{event.date}} - ${{event.end_date}}`
+                : event.date;
+            document.getElementById('event-panel-date').textContent = dateStr;
+
+            // Show map if available
+            const mapContainer = document.getElementById('event-panel-map');
+            if (event.map_svg) {{
+                mapContainer.innerHTML = event.map_svg;
+                mapContainer.style.display = 'block';
+            }} else {{
+                mapContainer.style.display = 'none';
+            }}
+
+            // Show summary
+            const summaryEl = document.getElementById('event-panel-summary');
+            summaryEl.textContent = event.summary || event.description || '';
+
+            // Show key facts if available
+            const factsEl = document.getElementById('event-panel-facts');
+            factsEl.innerHTML = '';
+            if (event.key_facts && event.key_facts.length > 0) {{
+                event.key_facts.forEach(fact => {{
+                    const li = document.createElement('li');
+                    li.textContent = fact;
+                    factsEl.appendChild(li);
+                }});
+                factsEl.style.display = 'block';
+            }} else {{
+                factsEl.style.display = 'none';
+            }}
+
+            // Show source link
+            const sourceEl = document.getElementById('event-panel-source');
+            if (event.source && event.source.startsWith('http')) {{
+                sourceEl.href = event.source;
+                sourceEl.style.display = 'inline-block';
+            }} else {{
+                sourceEl.style.display = 'none';
+            }}
+
+            // Show panel
+            eventPanel.classList.add('open');
+            eventPanelOverlay.classList.add('open');
+        }}
+
+        function hideEventPanel() {{
+            eventPanel.classList.remove('open');
+            eventPanelOverlay.classList.remove('open');
+        }}
+
+        // Panel close handlers
+        eventPanelClose.addEventListener('click', hideEventPanel);
+        eventPanelOverlay.addEventListener('click', hideEventPanel);
+
+        // Close panel on Escape key
+        document.addEventListener('keydown', (e) => {{
+            if (e.key === 'Escape') {{
+                hideEventPanel();
+            }}
+        }});
+
         // Event markers
         const eventMarkersContainer = document.getElementById('event-markers');
         timeline.events.forEach(event => {{
@@ -677,6 +922,11 @@ def generate_html(diary_html: str, places: list[dict], timeline: dict) -> str:
                     const eventDate = new Date(event.date).getTime();
                     const rangeWidth = 30 * 24 * 60 * 60 * 1000; // 30 days window
                     slider.noUiSlider.set([eventDate - rangeWidth/2, eventDate + rangeWidth/2]);
+
+                    // For historical events, show the detail panel
+                    if (event.type === 'historical') {{
+                        showEventPanel(event);
+                    }}
 
                     // For diary events, scroll to related place in text
                     if (event.type === 'diary' && event.related_places && event.related_places.length > 0) {{

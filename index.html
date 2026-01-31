@@ -318,6 +318,160 @@
             transition: opacity 0.3s ease;
         }
 
+        /* Event Detail Panel Styles */
+        .event-panel {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 380px;
+            height: 100vh;
+            background: #faf8f5;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.15);
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .event-panel.open {
+            transform: translateX(0);
+        }
+
+        .event-panel-header {
+            padding: 1rem 1.5rem;
+            background: #8b4513;
+            color: white;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-shrink: 0;
+        }
+
+        .event-panel-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+        .event-panel-close:hover {
+            opacity: 1;
+        }
+
+        .event-panel-title {
+            font-family: Georgia, serif;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0;
+            padding-right: 1rem;
+            line-height: 1.3;
+        }
+
+        .event-panel-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+        }
+
+        .event-panel-date {
+            font-size: 0.95rem;
+            color: #666;
+            font-style: italic;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .event-panel-map {
+            margin-bottom: 1.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            background: #b8d4e8;
+        }
+
+        .event-panel-map svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .event-panel-summary {
+            font-family: Georgia, serif;
+            font-size: 0.95rem;
+            line-height: 1.7;
+            color: #333;
+            margin-bottom: 1.5rem;
+            text-align: justify;
+        }
+
+        .event-panel-facts {
+            margin: 0 0 1.5rem 0;
+            padding: 0;
+            list-style: none;
+        }
+
+        .event-panel-facts li {
+            font-size: 0.9rem;
+            color: #444;
+            padding: 0.5rem 0 0.5rem 1.5rem;
+            position: relative;
+            border-bottom: 1px solid #eee;
+        }
+
+        .event-panel-facts li:last-child {
+            border-bottom: none;
+        }
+
+        .event-panel-facts li::before {
+            content: "\2022";
+            color: #8b4513;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .event-panel-source {
+            display: inline-block;
+            font-size: 0.9rem;
+            color: #2980b9;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border: 1px solid #2980b9;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .event-panel-source:hover {
+            background: #2980b9;
+            color: white;
+        }
+
+        .event-panel-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 999;
+        }
+
+        .event-panel-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -342,10 +496,29 @@
                 text-align: center;
                 margin-top: 0.5rem;
             }
+
+            .event-panel {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
+    <div class="event-panel-overlay" id="event-panel-overlay"></div>
+    <div class="event-panel" id="event-panel">
+        <div class="event-panel-header">
+            <h2 class="event-panel-title" id="event-panel-title"></h2>
+            <button class="event-panel-close" id="event-panel-close">&times;</button>
+        </div>
+        <div class="event-panel-content">
+            <div class="event-panel-date" id="event-panel-date"></div>
+            <div class="event-panel-map" id="event-panel-map"></div>
+            <div class="event-panel-summary" id="event-panel-summary"></div>
+            <ul class="event-panel-facts" id="event-panel-facts"></ul>
+            <a class="event-panel-source" id="event-panel-source" target="_blank">Read more on Wikipedia</a>
+        </div>
+    </div>
+
     <div class="container">
         <div class="diary-panel">
             <div class="diary-content">
@@ -1087,7 +1260,21 @@
         "crepon",
         "le_hamel",
         "arromanches"
-      ]
+      ],
+      "summary": "The Normandy landings were the landing operations and associated airborne operations on 6 June 1944 of the Allied invasion of Normandy in Operation Overlord during the Second World War. Codenamed Operation Neptune and often referred to as D-Day, it is the largest seaborne invasion in history. The operation began the liberation of France, and the rest of Western Europe, and laid the foundations for the Allied victory on the Western Front.",
+      "key_facts": [
+        "156,000 Allied troops landed on first day",
+        "5 beaches: Utah, Omaha, Gold, Juno, Sword",
+        "Over 4,400 Allied deaths on D-Day",
+        "Largest seaborne invasion in history"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,120 Q30,100 60,110 Q90,95 120,105 Q150,90 180,100 Q210,85 240,95 Q270,80 300,90 L300,200 L0,200 Z\"/>\n  <line class=\"annotation\" x1=\"150\" y1=\"40\" x2=\"150\" y2=\"80\" marker-end=\"url(#arrowhead)\"/>\n  <circle class=\"marker\" cx=\"40\" cy=\"105\" r=\"4\"/>\n  <text class=\"label\" x=\"46\" y=\"109\">Utah</text>\n  <circle class=\"marker\" cx=\"85\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"91\" y=\"104\">Omaha</text>\n  <circle class=\"marker\" cx=\"140\" cy=\"95\" r=\"4\"/>\n  <text class=\"label\" x=\"146\" y=\"99\">Gold</text>\n  <circle class=\"marker\" cx=\"195\" cy=\"90\" r=\"4\"/>\n  <text class=\"label\" x=\"201\" y=\"94\">Juno</text>\n  <circle class=\"marker\" cx=\"250\" cy=\"85\" r=\"4\"/>\n  <text class=\"label\" x=\"256\" y=\"89\">Sword</text>\n  <text class=\"title\" x=\"10\" y=\"15\">D-Day Landings</text>\n</svg>",
+      "map_bounds": {
+        "north": 49.5,
+        "south": 49.2,
+        "east": -0.3,
+        "west": -1.2
+      }
     },
     {
       "id": "edgar_lands",
@@ -1113,7 +1300,21 @@
       "related_places": [
         "caen",
         "crepon"
-      ]
+      ],
+      "summary": "Operation Charnwood was an Anglo-Canadian offensive that took place from 8 to 9 July 1944, during the Battle for Caen, part of the larger Operation Overlord in the Second World War. The operation was intended to capture the German-occupied city of Caen, which was an important objective for the Allies during the opening stages of Overlord. It was also hoped that the attack would forestall the transfer of German armoured units from the Anglo-Canadian sector to the American sector to the west, where an offensive was being prepared. The British and Canadians advanced on a broad front and by the evening of the second day had taken Caen up to the Orne and Odon rivers.",
+      "key_facts": [
+        "467 RAF heavy bombers participated",
+        "2,500 tons of bombs dropped",
+        "Significant civilian casualties",
+        "Northern Caen captured by 9 July"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,0 L300,0 L300,200 L0,200 Z\"/>\n  <circle class=\"zone\" cx=\"150\" cy=\"100\" r=\"40\"/>\n  <circle class=\"marker\" cx=\"150\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"156\" y=\"104\">Caen</text>\n  <circle class=\"marker\" cx=\"80\" cy=\"60\" r=\"4\"/>\n  <text class=\"label\" x=\"86\" y=\"64\">Crepon</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Operation Charnwood</text>\n</svg>",
+      "map_bounds": {
+        "north": 49.4,
+        "south": 49.1,
+        "east": -0.2,
+        "west": -0.6
+      }
     },
     {
       "id": "liberation_cherbourg",
@@ -1123,7 +1324,21 @@
       "type": "historical",
       "description": "Major port of Cherbourg captured by US forces, providing crucial supply capabilities.",
       "source": "https://en.wikipedia.org/wiki/Battle_of_Cherbourg",
-      "related_places": []
+      "related_places": [],
+      "summary": "The Battle of Cherbourg was part of the Battle of Normandy during World War II. It was fought immediately after the successful Allied landings on 6 June 1944. Allied troops, mainly American, isolated and captured the fortified port, which was considered vital to the campaign in Western Europe, in a hard-fought, month-long campaign.",
+      "key_facts": [
+        "Port captured by US VII Corps",
+        "39,000 German prisoners taken",
+        "Port operational by late September",
+        "Key to Allied supply chain"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,65 Q25,70 50,60 Q100,50 150,70 Q200,90 300,80 L300,200 L0,200 Z\"/>\n  <path class=\"water\" d=\"M0,0 L300,0 L300,80 Q200,90 150,70 Q100,50 50,60 Q25,70 0,65 Z\"/>\n  <circle class=\"marker\" cx=\"150\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"156\" y=\"104\">Cherbourg</text>\n  <circle class=\"marker\" cx=\"200\" cy=\"150\" r=\"4\"/>\n  <text class=\"label\" x=\"206\" y=\"154\">Utah Beach</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Cherbourg Peninsula</text>\n</svg>",
+      "map_bounds": {
+        "north": 49.8,
+        "south": 49.3,
+        "east": -1.2,
+        "west": -2.0
+      }
     },
     {
       "id": "falaise_pocket",
@@ -1136,7 +1351,21 @@
       "related_places": [
         "falaise",
         "argentan"
-      ]
+      ],
+      "summary": "The Falaise pocket or battle of the Falaise pocket was the decisive engagement of the Battle of Normandy in the Second World War. Allied forces formed a pocket around Falaise, Calvados, in which German Army Group B, consisting of the 7th Army and the Fifth Panzer Army, were encircled by the Western Allies. The battle resulted in the destruction of most of Army Group B west of the Seine, which opened the way to Paris and the Franco-German border.",
+      "key_facts": [
+        "50,000 German soldiers captured",
+        "10,000 German soldiers killed",
+        "Massive equipment losses for Germany",
+        "Ended Battle of Normandy"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,0 L300,0 L300,200 L0,200 Z\"/>\n  <ellipse class=\"annotation\" cx=\"150\" cy=\"110\" rx=\"60\" ry=\"40\" stroke-dasharray=\"5,3\"/>\n  <circle class=\"marker\" cx=\"120\" cy=\"80\" r=\"4\"/>\n  <text class=\"label\" x=\"126\" y=\"84\">Falaise</text>\n  <circle class=\"marker\" cx=\"180\" cy=\"140\" r=\"4\"/>\n  <text class=\"label\" x=\"186\" y=\"144\">Argentan</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Falaise Pocket</text>\n</svg>",
+      "map_bounds": {
+        "north": 49.1,
+        "south": 48.6,
+        "east": -0.1,
+        "west": -0.7
+      }
     },
     {
       "id": "liberation_paris",
@@ -1146,7 +1375,21 @@
       "type": "historical",
       "description": "Paris liberated after four years of German occupation.",
       "source": "https://en.wikipedia.org/wiki/Liberation_of_Paris",
-      "related_places": []
+      "related_places": [],
+      "summary": "The Liberation of Paris was a battle that took place during World War II from 19 August 1944 until the German garrison surrendered the French capital on 25 August 1944. Paris had been occupied by Nazi Germany since the signing of the Armistice of 22 June 1940, after which the Wehrmacht occupied northern and western France.",
+      "key_facts": [
+        "City spared from destruction",
+        "General von Choltitz surrendered",
+        "De Gaulle parade on 26 August",
+        "4 years of German occupation ended"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,0 L300,0 L300,200 L0,200 Z\"/>\n  <path class=\"river\" d=\"M80,180 Q120,140 150,120 Q180,100 220,60\"/>\n  <circle class=\"marker\" cx=\"150\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"156\" y=\"104\">Paris</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Liberation of Paris</text>\n</svg>",
+      "map_bounds": {
+        "north": 49.0,
+        "south": 48.7,
+        "east": 2.5,
+        "west": 2.1
+      }
     },
     {
       "id": "edgar_leaves_normandy",
@@ -1174,7 +1417,21 @@
       "source": "https://en.wikipedia.org/wiki/Liberation_of_Belgium",
       "related_places": [
         "brussels"
-      ]
+      ],
+      "summary": "The Liberation of Belgium from German occupation began on 2 September 1944 when Allied forces entered the province of Hainaut and was completed on 4 February 1945 with the liberation of the village of Krewinkel. The liberation came after four years of German-occupied rule. The Belgian government was returned to power on 8 September 1944 after Allied forces had captured Brussels four days earlier.",
+      "key_facts": [
+        "Liberated by Guards Armoured Division",
+        "Minimal fighting in city center",
+        "Part of the rapid Allied advance",
+        "4 years of occupation ended"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,0 L300,0 L300,200 L0,200 Z\"/>\n  <circle class=\"marker\" cx=\"150\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"156\" y=\"104\">Brussels</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Liberation of Brussels</text>\n</svg>",
+      "map_bounds": {
+        "north": 51.0,
+        "south": 50.7,
+        "east": 4.6,
+        "west": 4.2
+      }
     },
     {
       "id": "liberation_antwerp",
@@ -1186,7 +1443,21 @@
       "source": "https://en.wikipedia.org/wiki/Antwerp_in_World_War_II",
       "related_places": [
         "antwerp"
-      ]
+      ],
+      "summary": "Antwerp was liberated on 4 September 1944 by the British 11th Armoured Division. The port facilities were captured nearly intact, but the city could not be used for shipping until the Scheldt estuary was cleared of German forces. The port would become the most important Allied supply hub after finally opening in late November.",
+      "key_facts": [
+        "Port captured nearly intact",
+        "Could not be used until Scheldt cleared",
+        "Became key Allied supply hub",
+        "German V-weapon attacks followed"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M100,0 L300,0 L300,200 L0,200 L0,100 L80,100 Q100,90 130,80 L130,60 Q120,30 100,0 Z\"/>\n  <path class=\"water\" d=\"M0,0 L100,0 Q120,30 130,60 L130,80 Q100,90 80,100 L0,100 Z\"/>\n  <circle class=\"marker\" cx=\"180\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"186\" y=\"104\">Antwerp</text>\n  <circle class=\"marker\" cx=\"100\" cy=\"60\" r=\"4\"/>\n  <text class=\"label\" x=\"106\" y=\"64\">Scheldt</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Liberation of Antwerp</text>\n</svg>",
+      "map_bounds": {
+        "north": 51.4,
+        "south": 51.1,
+        "east": 4.6,
+        "west": 4.2
+      }
     },
     {
       "id": "calais_bombing",
@@ -1225,7 +1496,21 @@
         "knokke",
         "goes",
         "zuid_beveland"
-      ]
+      ],
+      "summary": "The Battle of the Scheldt in World War II was a series of military operations to open up the Scheldt river between Antwerp and the North Sea for shipping, so that Antwerp's port could be used to supply the Allies in north-west Europe. The operations were carried out by the First Canadian Army, with assistance from Polish and British units which had been attached. The action was under the acting command of the First Canadian's Lieutenant-General Guy Simonds. The battle took place in the vicinity of the Scheldt river in northern Belgium and southwestern Netherlands from 2 October to 8 November 1944.",
+      "key_facts": [
+        "Canadian forces led the campaign",
+        "12,873 Canadian casualties",
+        "Opened vital supply route",
+        "First convoy reached Antwerp 28 Nov"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,80 Q50,70 100,90 Q150,110 200,100 Q250,90 300,100 L300,200 L0,200 Z\"/>\n  <path class=\"water\" d=\"M0,80 Q50,70 100,90 Q150,110 200,100 Q250,90 300,100 L300,0 L0,0 Z\"/>\n  <circle class=\"marker\" cx=\"80\" cy=\"120\" r=\"4\"/>\n  <text class=\"label\" x=\"86\" y=\"124\">Knokke</text>\n  <circle class=\"marker\" cx=\"200\" cy=\"130\" r=\"4\"/>\n  <text class=\"label\" x=\"206\" y=\"134\">Goes</text>\n  <circle class=\"marker\" cx=\"250\" cy=\"110\" r=\"4\"/>\n  <text class=\"label\" x=\"256\" y=\"114\">Beveland</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Battle of the Scheldt</text>\n</svg>",
+      "map_bounds": {
+        "north": 51.6,
+        "south": 51.2,
+        "east": 4.2,
+        "west": 3.4
+      }
     },
     {
       "id": "edgar_zuid_beveland",
@@ -1248,7 +1533,21 @@
       "type": "historical",
       "description": "Last major German offensive on the Western Front.",
       "source": "https://en.wikipedia.org/wiki/Battle_of_the_Bulge",
-      "related_places": []
+      "related_places": [],
+      "summary": "The Battle of the Bulge, also known as the Ardennes Offensive or Unternehmen Wacht am Rhein, was the last major German offensive campaign on the Western Front during the Second World War, taking place from 16 December 1944 to 25 January 1945. It was launched through the densely forested Ardennes region of eastern Belgium and northern Luxembourg. The offensive was intended to stop Allied use of the Belgian port of Antwerp and to split the Allied lines, allowing the Germans to encircle and destroy each of the four Allied armies and force the western Allies to negotiate a peace treaty in the Axis powers' favor.",
+      "key_facts": [
+        "250,000 German troops attacked",
+        "Largest battle on Western Front",
+        "'Nuts!' reply at Bastogne",
+        "Coldest winter in decades"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,0 L300,0 L300,200 L0,200 Z\"/>\n  <path class=\"annotation\" d=\"M50,50 Q100,80 150,120 Q200,80 250,50\" stroke-width=\"2\"/>\n  <circle class=\"marker\" cx=\"150\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"156\" y=\"104\">Bastogne</text>\n  <circle class=\"marker\" cx=\"80\" cy=\"60\" r=\"4\"/>\n  <text class=\"label\" x=\"86\" y=\"64\">St. Vith</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Battle of the Bulge</text>\n</svg>",
+      "map_bounds": {
+        "north": 50.5,
+        "south": 49.8,
+        "east": 6.5,
+        "west": 5.5
+      }
     },
     {
       "id": "bulge_ends",
@@ -1258,7 +1557,21 @@
       "type": "historical",
       "description": "German offensive repulsed with heavy losses on both sides.",
       "source": "https://en.wikipedia.org/wiki/Battle_of_the_Bulge",
-      "related_places": []
+      "related_places": [],
+      "summary": "The Battle of the Bulge, also known as the Ardennes Offensive or Unternehmen Wacht am Rhein, was the last major German offensive campaign on the Western Front during the Second World War, taking place from 16 December 1944 to 25 January 1945. It was launched through the densely forested Ardennes region of eastern Belgium and northern Luxembourg. The offensive was intended to stop Allied use of the Belgian port of Antwerp and to split the Allied lines, allowing the Germans to encircle and destroy each of the four Allied armies and force the western Allies to negotiate a peace treaty in the Axis powers' favor.",
+      "key_facts": [
+        "19,000 American soldiers killed",
+        "German losses: 100,000+ casualties",
+        "Last major German offensive",
+        "Depleted German reserves"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,0 L300,0 L300,200 L0,200 Z\"/>\n  <circle class=\"marker\" cx=\"150\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"156\" y=\"104\">Bastogne</text>\n  <circle class=\"marker\" cx=\"80\" cy=\"60\" r=\"4\"/>\n  <text class=\"label\" x=\"86\" y=\"64\">St. Vith</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Battle of the Bulge - End</text>\n</svg>",
+      "map_bounds": {
+        "north": 50.5,
+        "south": 49.8,
+        "east": 6.5,
+        "west": 5.5
+      }
     },
     {
       "id": "edgar_first_leave",
@@ -1294,7 +1607,21 @@
       "source": "https://en.wikipedia.org/wiki/Operation_Plunder",
       "related_places": [
         "wesel"
-      ]
+      ],
+      "summary": "Operation Plunder was a military operation to cross the Rhine on the night of 23 March 1945, launched by the 21st Army Group under Field Marshal Bernard Montgomery. The crossing of the river was at Rees, Wesel, and south of the river Lippe by the British Second Army under Lieutenant General Miles Dempsey, and the United States Ninth Army under Lieutenant General William H. Simpson.",
+      "key_facts": [
+        "Largest river crossing operation ever",
+        "Operation Varsity airborne support",
+        "25,000 troops crossed on first day",
+        "Opened path into Germany"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,0 L300,0 L300,200 L0,200 Z\"/>\n  <path class=\"river\" d=\"M140,0 Q145,50 150,100 Q155,150 160,200\"/>\n  <circle class=\"marker\" cx=\"150\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"156\" y=\"104\">Wesel</text>\n  <circle class=\"marker\" cx=\"100\" cy=\"80\" r=\"4\"/>\n  <text class=\"label\" x=\"106\" y=\"84\">Rees</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Operation Plunder</text>\n</svg>",
+      "map_bounds": {
+        "north": 51.8,
+        "south": 51.4,
+        "east": 6.8,
+        "west": 6.4
+      }
     },
     {
       "id": "cease_firing",
@@ -1320,7 +1647,21 @@
       "related_places": [
         "kapelle",
         "antwerp"
-      ]
+      ],
+      "summary": "Victory in Europe Day is the day celebrating the formal acceptance by the Allies of World War II of Nazi Germany's unconditional surrender of its armed forces on Tuesday, 8 May 1945; it marked the official surrender of all German military operations.",
+      "key_facts": [
+        "German surrender signed 7 May",
+        "Ratified in Berlin 8-9 May",
+        "End of war in Europe",
+        "Massive celebrations worldwide"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M50,0 L300,0 L300,200 L0,200 L0,100 L30,100 L35,60 Q40,30 50,0 Z\"/>\n  <path class=\"water\" d=\"M0,0 L50,0 Q40,30 35,60 L30,100 L0,100 Z\"/>\n  <circle class=\"marker\" cx=\"100\" cy=\"80\" r=\"4\"/>\n  <text class=\"label\" x=\"106\" y=\"84\">Brussels</text>\n  <circle class=\"marker\" cx=\"150\" cy=\"60\" r=\"4\"/>\n  <text class=\"label\" x=\"156\" y=\"64\">Antwerp</text>\n  <circle class=\"marker\" cx=\"250\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"256\" y=\"104\">Berlin</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Victory in Europe</text>\n</svg>",
+      "map_bounds": {
+        "north": 52.0,
+        "south": 48.0,
+        "east": 8.0,
+        "west": 2.0
+      }
     },
     {
       "id": "collaborators",
@@ -1361,7 +1702,21 @@
       "related_places": [
         "berlin",
         "brunswick"
-      ]
+      ],
+      "summary": "The Berlin Victory Parade of 1945 was held by the Allies of World War II on 7 September 1945 in Berlin, the capital of the defeated Germany, shortly after the end of World War II. The four participating countries were the Soviet Union, the United States, the United Kingdom, and France.",
+      "key_facts": [
+        "Four Allied powers participated",
+        "Held in ruined Berlin",
+        "Symbolic end of European war",
+        "Massive military display"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M0,0 L300,0 L300,200 L0,200 Z\"/>\n  <path class=\"annotation\" d=\"M80,150 L150,100 L220,150\" stroke-dasharray=\"4,2\"/>\n  <circle class=\"marker\" cx=\"150\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"156\" y=\"104\">Berlin</text>\n  <circle class=\"marker\" cx=\"120\" cy=\"80\" r=\"4\"/>\n  <text class=\"label\" x=\"126\" y=\"84\">Brandenburg</text>\n  <text class=\"title\" x=\"10\" y=\"15\">Berlin Victory Parade</text>\n</svg>",
+      "map_bounds": {
+        "north": 52.6,
+        "south": 52.4,
+        "east": 13.5,
+        "west": 13.3
+      }
     },
     {
       "id": "edgar_berlin",
@@ -1383,7 +1738,21 @@
       "type": "historical",
       "description": "World War II officially ends with Japanese surrender.",
       "source": "https://en.wikipedia.org/wiki/Victory_over_Japan_Day",
-      "related_places": []
+      "related_places": [],
+      "summary": "Victory over Japan Day is the day on which Imperial Japan surrendered in World War II, in effect bringing the war to an end. The term has been applied to both of the days on which the initial announcement of Japan's surrender was made \u2013 15 August 1945, in Japan, and because of time zone differences, 14 August 1945 \u2013 as well as to 2 September 1945, when the surrender document was signed, officially ending World War II.",
+      "key_facts": [
+        "Announced by Emperor Hirohito",
+        "Formal surrender 2 September",
+        "End of World War II",
+        "Followed atomic bombings"
+      ],
+      "map_svg": "<svg viewBox=\"0 0 300 200\" xmlns=\"http://www.w3.org/2000/svg\">\n  <defs>\n    <style>\n      .water { fill: #b8d4e8; }\n      .land { fill: #e8e4d9; }\n      .marker { fill: #8b4513; }\n      .label { font-family: Georgia, serif; font-size: 10px; fill: #333; }\n      .title { font-family: Georgia, serif; font-size: 11px; font-weight: bold; fill: #2c3e50; }\n      .annotation { fill: none; stroke: #8b4513; stroke-width: 1.5; opacity: 0.6; }\n      .river { fill: none; stroke: #6ba3d6; stroke-width: 2; }\n      .zone { fill: #c0392b; opacity: 0.2; }\n    </style>\n  </defs>\n  <rect class=\"water\" width=\"300\" height=\"200\"/>\n  <path class=\"land\" d=\"M50,0 L280,0 Q290,50 300,60 L300,200 L0,200 L0,100 L30,100 L35,60 Q40,30 50,0 Z\"/>\n  <path class=\"water\" d=\"M0,0 L50,0 Q40,30 35,60 L30,100 L0,100 Z M280,0 L300,0 L300,60 Q290,50 280,40 Z\"/>\n  <circle class=\"marker\" cx=\"150\" cy=\"100\" r=\"4\"/>\n  <text class=\"label\" x=\"156\" y=\"104\">Europe</text>\n  <text class=\"title\" x=\"10\" y=\"15\">VJ Day</text>\n</svg>",
+      "map_bounds": {
+        "north": 54.0,
+        "south": 48.0,
+        "east": 14.0,
+        "west": 2.0
+      }
     },
     {
       "id": "edgar_demob",
@@ -1602,6 +1971,78 @@
             step: 24 * 60 * 60 * 1000 // 1 day
         });
 
+        // Event panel functions
+        const eventPanel = document.getElementById('event-panel');
+        const eventPanelOverlay = document.getElementById('event-panel-overlay');
+        const eventPanelClose = document.getElementById('event-panel-close');
+
+        function showEventPanel(event) {
+            // Populate panel content
+            document.getElementById('event-panel-title').textContent = event.name;
+
+            // Format date
+            const dateStr = event.end_date
+                ? `${event.date} - ${event.end_date}`
+                : event.date;
+            document.getElementById('event-panel-date').textContent = dateStr;
+
+            // Show map if available
+            const mapContainer = document.getElementById('event-panel-map');
+            if (event.map_svg) {
+                mapContainer.innerHTML = event.map_svg;
+                mapContainer.style.display = 'block';
+            } else {
+                mapContainer.style.display = 'none';
+            }
+
+            // Show summary
+            const summaryEl = document.getElementById('event-panel-summary');
+            summaryEl.textContent = event.summary || event.description || '';
+
+            // Show key facts if available
+            const factsEl = document.getElementById('event-panel-facts');
+            factsEl.innerHTML = '';
+            if (event.key_facts && event.key_facts.length > 0) {
+                event.key_facts.forEach(fact => {
+                    const li = document.createElement('li');
+                    li.textContent = fact;
+                    factsEl.appendChild(li);
+                });
+                factsEl.style.display = 'block';
+            } else {
+                factsEl.style.display = 'none';
+            }
+
+            // Show source link
+            const sourceEl = document.getElementById('event-panel-source');
+            if (event.source && event.source.startsWith('http')) {
+                sourceEl.href = event.source;
+                sourceEl.style.display = 'inline-block';
+            } else {
+                sourceEl.style.display = 'none';
+            }
+
+            // Show panel
+            eventPanel.classList.add('open');
+            eventPanelOverlay.classList.add('open');
+        }
+
+        function hideEventPanel() {
+            eventPanel.classList.remove('open');
+            eventPanelOverlay.classList.remove('open');
+        }
+
+        // Panel close handlers
+        eventPanelClose.addEventListener('click', hideEventPanel);
+        eventPanelOverlay.addEventListener('click', hideEventPanel);
+
+        // Close panel on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                hideEventPanel();
+            }
+        });
+
         // Event markers
         const eventMarkersContainer = document.getElementById('event-markers');
         timeline.events.forEach(event => {
@@ -1615,6 +2056,11 @@
                     const eventDate = new Date(event.date).getTime();
                     const rangeWidth = 30 * 24 * 60 * 60 * 1000; // 30 days window
                     slider.noUiSlider.set([eventDate - rangeWidth/2, eventDate + rangeWidth/2]);
+
+                    // For historical events, show the detail panel
+                    if (event.type === 'historical') {
+                        showEventPanel(event);
+                    }
 
                     // For diary events, scroll to related place in text
                     if (event.type === 'diary' && event.related_places && event.related_places.length > 0) {
