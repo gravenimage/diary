@@ -1,0 +1,816 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-01-31",
+    "description": "Historical records of army units associated with Edgar Hopkins' WW2 service",
+    "notes": "Data compiled from Wikipedia, Royal Artillery archives, and National Archives references"
+  },
+
+  "sources": [
+    {
+      "id": "wiki_113haa",
+      "type": "encyclopedia",
+      "title": "113th Heavy Anti-Aircraft Regiment, Royal Artillery",
+      "url": "https://en.wikipedia.org/wiki/113th_Heavy_Anti-Aircraft_Regiment,_Royal_Artillery",
+      "accessed": "2026-01-31",
+      "reliability": "secondary",
+      "notes": "Wikipedia article with citations to war diaries and official records"
+    },
+    {
+      "id": "wiki_76aabde",
+      "type": "encyclopedia",
+      "title": "76th Anti-Aircraft Brigade (United Kingdom)",
+      "url": "https://en.wikipedia.org/wiki/76th_Anti-Aircraft_Brigade_(United_Kingdom)",
+      "accessed": "2026-01-31",
+      "reliability": "secondary",
+      "notes": "Wikipedia article with citations to war diaries"
+    },
+    {
+      "id": "ra3945_113",
+      "type": "research_database",
+      "title": "113 Heavy Anti-Aircraft Regiment RA(TA)",
+      "url": "https://ra39-45.co.uk/units/heavy-anti-aircraft-regiments/113-heavy-anti-aircraft-regiment-rata",
+      "accessed": "2026-01-31",
+      "reliability": "secondary",
+      "notes": "Royal Artillery 1939-45 project - compiled unit histories"
+    },
+    {
+      "id": "ra3945_76",
+      "type": "research_database",
+      "title": "76 Anti-Aircraft Brigade",
+      "url": "https://ra39-45.co.uk/units/anti-aircraft-brigades/76-anti-aircraft-brigade",
+      "accessed": "2026-01-31",
+      "reliability": "secondary",
+      "notes": "Royal Artillery 1939-45 project - compiled unit histories"
+    },
+    {
+      "id": "tna_wo171",
+      "type": "archive",
+      "title": "War Office: Allied Expeditionary Force, North West Europe (British Element): War Diaries, Second World War",
+      "url": "https://discovery.nationalarchives.gov.uk/details/r/C14378",
+      "accessed": "2026-01-31",
+      "reliability": "primary",
+      "notes": "National Archives catalogue for WO 171 series - contains original war diaries"
+    },
+    {
+      "id": "tna_wo166",
+      "type": "archive",
+      "title": "War Office: Home Forces: War Diaries, Second World War",
+      "url": "https://discovery.nationalarchives.gov.uk/details/r/C14373",
+      "accessed": "2026-01-31",
+      "reliability": "primary",
+      "notes": "National Archives catalogue for WO 166 series - Home Forces war diaries"
+    },
+    {
+      "id": "wiki_ra_list",
+      "type": "encyclopedia",
+      "title": "List of regiments of the Royal Artillery (1938–1947)",
+      "url": "https://en.wikipedia.org/wiki/List_of_regiments_of_the_Royal_Artillery_(1938%E2%80%931947)",
+      "accessed": "2026-01-31",
+      "reliability": "secondary",
+      "notes": "Comprehensive list of RA units"
+    },
+    {
+      "id": "wartimememories",
+      "type": "research_database",
+      "title": "The Wartime Memories Project",
+      "url": "https://www.wartimememoriesproject.com/",
+      "accessed": "2026-01-31",
+      "reliability": "secondary",
+      "notes": "Community-contributed wartime records and memories"
+    }
+  ],
+
+  "units": [
+    {
+      "id": "76_aa_bde",
+      "designation": "76th Anti-Aircraft Brigade",
+      "short_name": "76 AA Bde",
+      "type": "brigade",
+      "branch": "Royal Artillery",
+      "role": "anti-aircraft",
+      "formed": "1942-12-01",
+      "disbanded": "1946-04-30",
+      "formed_at": "Blandford, Dorset",
+      "parent_unit": null,
+      "commanding_officers": [
+        {
+          "name": "Brigadier Edward Riou Benson",
+          "from": "1942-12-01",
+          "to": null,
+          "notes": "First commanding officer (1903-1985)"
+        }
+      ],
+      "subordinate_units": ["113_haa_rgt", "112_haa_rgt", "146_haa_rgt", "99_haa_rgt"],
+      "equipment": [
+        "3.7-inch AA gun (HAA regiments)",
+        "Bofors 40mm (LAA regiments)",
+        "Polsten 20mm triple mount",
+        "GL Mk II radar",
+        "Searchlights"
+      ],
+      "sources": ["wiki_76aabde", "ra3945_76"]
+    },
+    {
+      "id": "113_haa_rgt",
+      "designation": "113th Heavy Anti-Aircraft Regiment, Royal Artillery (Territorial Army)",
+      "short_name": "113 HAA Rgt",
+      "type": "regiment",
+      "branch": "Royal Artillery",
+      "role": "heavy_anti-aircraft",
+      "formed": "1940-11-25",
+      "disbanded": "1945-04-30",
+      "formed_at": "Tŷ Croes Camp, Anglesey",
+      "parent_unit": "76_aa_bde",
+      "commanding_officers": [],
+      "subordinate_units": ["362_haa_bty", "366_haa_bty", "391_haa_bty"],
+      "equipment": [
+        "3.7-inch AA gun (24 guns total)",
+        "GL Mk II radar"
+      ],
+      "notes": "Mobile HAA regiment with 3 batteries of 2 troops each. Had own REME workshop (113 HAA Workshop).",
+      "sources": ["wiki_113haa", "ra3945_113"]
+    },
+    {
+      "id": "362_haa_bty",
+      "designation": "362 Heavy Anti-Aircraft Battery",
+      "short_name": "362 Bty",
+      "type": "battery",
+      "branch": "Royal Artillery",
+      "role": "heavy_anti-aircraft",
+      "formed": "1940-09-21",
+      "disbanded": "1945-04-30",
+      "formed_at": "Tŷ Croes, Anglesey",
+      "parent_unit": "113_haa_rgt",
+      "equipment": ["3.7-inch AA gun (8 guns)"],
+      "notes": "One of the original batteries of 113 HAA Rgt",
+      "sources": ["wiki_113haa"]
+    },
+    {
+      "id": "366_haa_bty",
+      "designation": "366 Heavy Anti-Aircraft Battery",
+      "short_name": "366 Bty",
+      "type": "battery",
+      "branch": "Royal Artillery",
+      "role": "heavy_anti-aircraft",
+      "formed": "1940-09-21",
+      "disbanded": "1945-04-30",
+      "formed_at": "Tŷ Croes, Anglesey",
+      "parent_unit": "113_haa_rgt",
+      "equipment": ["3.7-inch AA gun (8 guns)"],
+      "notes": "One of the original batteries of 113 HAA Rgt",
+      "sources": ["wiki_113haa"]
+    },
+    {
+      "id": "391_haa_bty",
+      "designation": "391 Heavy Anti-Aircraft Battery",
+      "short_name": "391 Bty",
+      "type": "battery",
+      "branch": "Royal Artillery",
+      "role": "heavy_anti-aircraft",
+      "formed": "1940-11-14",
+      "disbanded": "1945-04-30",
+      "formed_at": "211th HAA Training Rgt, Oswestry",
+      "parent_unit": "113_haa_rgt",
+      "equipment": ["3.7-inch AA gun (8 guns)"],
+      "notes": "Joined 113 HAA Rgt in February 1941. Formed from cadre supplied by 78th (1st East Anglian) HAA Rgt.",
+      "sources": ["wiki_113haa"]
+    }
+  ],
+
+  "events": [
+    {
+      "id": "113_formed",
+      "date": "1940-11-25",
+      "end_date": null,
+      "unit_id": "113_haa_rgt",
+      "type": "formation",
+      "category": "administrative",
+      "name": "113 HAA Regiment formed",
+      "description": "Regimental Headquarters formed at No 3 AA Practice Camp at Tŷ Croes on Anglesey to take command of 359, 362 and 366 HAA Batteries.",
+      "location": {
+        "name": "Tŷ Croes Camp, Anglesey",
+        "lat": 53.2167,
+        "lng": -4.5000,
+        "country": "Wales"
+      },
+      "sources": ["wiki_113haa"],
+      "tags": ["formation", "home_front"],
+      "edgar_relevance": "none"
+    },
+    {
+      "id": "76_formed",
+      "date": "1942-12-01",
+      "end_date": null,
+      "unit_id": "76_aa_bde",
+      "type": "formation",
+      "category": "administrative",
+      "name": "76 AA Brigade formed",
+      "description": "76th AA Brigade formed at Cradock Lines, South Camp, Blandford in Dorset under Brigadier Edward Riou Benson.",
+      "location": {
+        "name": "Blandford, Dorset",
+        "lat": 50.8570,
+        "lng": -2.1700,
+        "country": "England"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["formation", "home_front"],
+      "edgar_relevance": "none"
+    },
+    {
+      "id": "nottingham_blitz",
+      "date": "1941-05-08",
+      "end_date": "1941-05-09",
+      "unit_id": "113_haa_rgt",
+      "type": "combat",
+      "category": "air_defence",
+      "name": "Nottingham Blitz",
+      "description": "The North and East Midlands were heavily attacked. 113 HAA Rgt was defending Nottingham and Derby area under 66th AA Bde.",
+      "location": {
+        "name": "Nottingham",
+        "lat": 52.9548,
+        "lng": -1.1581,
+        "country": "England"
+      },
+      "sources": ["wiki_113haa"],
+      "tags": ["combat", "blitz", "home_front", "air_defence"],
+      "edgar_relevance": "low"
+    },
+    {
+      "id": "362_london_detachment",
+      "date": "1941-10-01",
+      "end_date": "1941-12-31",
+      "unit_id": "362_haa_bty",
+      "type": "deployment",
+      "category": "air_defence",
+      "name": "362 Battery detached to London",
+      "description": "362 Battery detached to the London Inner Artillery Zone, manning sites at Walthamstow and Barnes, then Bedfont and Yeading in Middlesex. Saw action against night intruders.",
+      "location": {
+        "name": "London",
+        "lat": 51.5074,
+        "lng": -0.1278,
+        "country": "England"
+      },
+      "sources": ["wiki_113haa"],
+      "tags": ["deployment", "blitz", "home_front", "air_defence"],
+      "edgar_relevance": "low"
+    },
+    {
+      "id": "113_mobilisation",
+      "date": "1942-11-22",
+      "end_date": null,
+      "unit_id": "113_haa_rgt",
+      "type": "mobilisation",
+      "category": "administrative",
+      "name": "113 HAA Regiment ordered to mobilise",
+      "description": "Regiment ordered to begin mobilisation to become part of the field force for overseas service.",
+      "location": null,
+      "sources": ["wiki_113haa"],
+      "tags": ["mobilisation", "preparation"],
+      "edgar_relevance": "medium"
+    },
+    {
+      "id": "113_joins_76",
+      "date": "1943-06-01",
+      "end_date": null,
+      "unit_id": "113_haa_rgt",
+      "type": "reorganisation",
+      "category": "administrative",
+      "name": "113 HAA Regiment joins 76 AA Brigade",
+      "description": "113 HAA Rgt came under command of newly formed 76th AA Bde HQ at Peover Hall, Knutsford, training for Operation Overlord.",
+      "location": {
+        "name": "Knutsford, Cheshire",
+        "lat": 53.3026,
+        "lng": -2.3750,
+        "country": "England"
+      },
+      "sources": ["wiki_113haa", "ra3945_76"],
+      "tags": ["reorganisation", "preparation", "overlord"],
+      "edgar_relevance": "high"
+    },
+    {
+      "id": "76_concentration_southend",
+      "date": "1944-05-15",
+      "end_date": "1944-05-25",
+      "unit_id": "76_aa_bde",
+      "type": "deployment",
+      "category": "preparation",
+      "name": "Brigade concentrates at Southend",
+      "description": "Units required for the assault phase of Overlord gathered in southern England. The whole brigade (except 120th LAA Rgt at Southampton) concentrated at Southend-on-Sea.",
+      "location": {
+        "name": "Southend-on-Sea",
+        "lat": 51.5459,
+        "lng": 0.7077,
+        "country": "England"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["preparation", "overlord", "embarkation"],
+      "edgar_relevance": "high"
+    },
+    {
+      "id": "113_embarkation",
+      "date": "1944-06-01",
+      "end_date": null,
+      "unit_id": "113_haa_rgt",
+      "type": "embarkation",
+      "category": "movement",
+      "name": "113 HAA Regiment embarks for Normandy",
+      "description": "Reconnaissance groups embarked on Landing Craft, Tank (LCTs) at Southampton while main body loaded onto Landing Ships, Tank (LSTs) at Felixstowe.",
+      "location": {
+        "name": "Southampton / Felixstowe",
+        "lat": 50.9097,
+        "lng": -1.4044,
+        "country": "England"
+      },
+      "sources": ["wiki_113haa"],
+      "tags": ["embarkation", "overlord", "dday"],
+      "edgar_relevance": "high"
+    },
+    {
+      "id": "dday_gold_beach",
+      "date": "1944-06-06",
+      "end_date": null,
+      "unit_id": "76_aa_bde",
+      "type": "combat",
+      "category": "amphibious_assault",
+      "name": "D-Day: 76 AA Brigade lands on Gold Beach",
+      "description": "76th AA Bde supported XXX Corps landing on Gold Beach. 113th HAA Rgt was in the AA Assault Group scheduled to land on D-Day itself, on Jig and King sectors.",
+      "location": {
+        "name": "Gold Beach, Normandy",
+        "lat": 49.3400,
+        "lng": -0.6300,
+        "country": "France"
+      },
+      "sources": ["wiki_76aabde", "wiki_113haa"],
+      "tags": ["combat", "dday", "overlord", "amphibious", "gold_beach"],
+      "edgar_relevance": "high",
+      "related_diary_events": ["dday", "edgar_lands"]
+    },
+    {
+      "id": "captured_88mm",
+      "date": "1944-06-10",
+      "end_date": "1944-06-12",
+      "unit_id": "113_haa_rgt",
+      "type": "combat",
+      "category": "equipment_capture",
+      "name": "Regiment captures German 88mm guns",
+      "description": "Regiment collected two captured German 88mm flak guns for potential anti-tank use. 362 and 391 Batteries each collected another on 12 June. Three had anti-tank sights.",
+      "location": {
+        "name": "Normandy",
+        "lat": 49.3400,
+        "lng": -0.6300,
+        "country": "France"
+      },
+      "sources": ["wiki_113haa"],
+      "tags": ["combat", "equipment", "normandy"],
+      "edgar_relevance": "medium"
+    },
+    {
+      "id": "76_full_strength",
+      "date": "1944-06-25",
+      "end_date": null,
+      "unit_id": "76_aa_bde",
+      "type": "deployment",
+      "category": "buildup",
+      "name": "Brigade reaches full strength in Normandy",
+      "description": "Between 15 and 25 June, 76th AA Bde attained its full strength in Normandy.",
+      "location": {
+        "name": "Normandy",
+        "lat": 49.3400,
+        "lng": -0.6300,
+        "country": "France"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["buildup", "normandy"],
+      "edgar_relevance": "high"
+    },
+    {
+      "id": "mulberry_defence",
+      "date": "1944-06-15",
+      "end_date": "1944-08-31",
+      "unit_id": "76_aa_bde",
+      "type": "combat",
+      "category": "air_defence",
+      "name": "Defence of Mulberry Harbour",
+      "description": "Main task became protection of the artificial Mulberry harbour at Arromanches-les-Bains. 99th and 146th HAA Rgts arrived by D+15 to strengthen defences.",
+      "location": {
+        "name": "Arromanches-les-Bains",
+        "lat": 49.3392,
+        "lng": -0.6214,
+        "country": "France"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["combat", "air_defence", "mulberry", "normandy"],
+      "edgar_relevance": "high",
+      "related_places": ["arromanches"]
+    },
+    {
+      "id": "port_en_bessin_defence",
+      "date": "1944-06-15",
+      "end_date": "1944-08-31",
+      "unit_id": "76_aa_bde",
+      "type": "combat",
+      "category": "air_defence",
+      "name": "33 consecutive nights of action at Port-en-Bessin",
+      "description": "At Port-en-Bessin, 146th HAA and 139th LAA Rgts were in action for 33 consecutive nights against high- and low-level bombing. HAA guns fired 5,563 rounds, scoring 11 kills.",
+      "location": {
+        "name": "Port-en-Bessin",
+        "lat": 49.3478,
+        "lng": -0.7550,
+        "country": "France"
+      },
+      "combat_stats": {
+        "rounds_fired": 5563,
+        "aircraft_destroyed": 11
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["combat", "air_defence", "normandy", "intense_action"],
+      "edgar_relevance": "medium"
+    },
+    {
+      "id": "radar_tracking",
+      "date": "1944-06-15",
+      "end_date": "1944-08-31",
+      "unit_id": "76_aa_bde",
+      "type": "operations",
+      "category": "intelligence",
+      "name": "Radar tracking of minelaying aircraft",
+      "description": "112th and 146th HAA Rgts established radar stations on cliffs above Arromanches and Port-en-Bessin to track Luftwaffe minelaying aircraft and parachute mine falls for Royal Navy clearance.",
+      "location": {
+        "name": "Arromanches / Port-en-Bessin",
+        "lat": 49.3400,
+        "lng": -0.6800,
+        "country": "France"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["operations", "radar", "intelligence", "normandy"],
+      "edgar_relevance": "medium"
+    },
+    {
+      "id": "artificial_moonlight",
+      "date": "1944-07-01",
+      "end_date": "1944-08-31",
+      "unit_id": "76_aa_bde",
+      "type": "operations",
+      "category": "support",
+      "name": "Searchlights provide artificial moonlight",
+      "description": "Searchlights began to be used to provide 'artificial moonlight' for tanks moving at night.",
+      "location": {
+        "name": "Normandy",
+        "lat": 49.3400,
+        "lng": -0.6300,
+        "country": "France"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["operations", "searchlights", "innovation", "normandy"],
+      "edgar_relevance": "low"
+    },
+    {
+      "id": "76_relieved_coast",
+      "date": "1944-09-01",
+      "end_date": null,
+      "unit_id": "76_aa_bde",
+      "type": "movement",
+      "category": "relief",
+      "name": "Brigade relieved of coastal responsibilities",
+      "description": "After 21st Army Group broke out of beachhead in August, 76th AA Bde was relieved by 105th AA Bde and made available to support the advance.",
+      "location": {
+        "name": "Normandy coast",
+        "lat": 49.3400,
+        "lng": -0.6300,
+        "country": "France"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["movement", "relief", "breakout"],
+      "edgar_relevance": "high"
+    },
+    {
+      "id": "113_dieppe",
+      "date": "1944-09-01",
+      "end_date": "1944-09-15",
+      "unit_id": "113_haa_rgt",
+      "type": "deployment",
+      "category": "air_defence",
+      "name": "113 HAA Regiment at Dieppe",
+      "description": "Regiment deployed to cover Dieppe area during Allied advance.",
+      "location": {
+        "name": "Dieppe",
+        "lat": 49.9253,
+        "lng": 1.0760,
+        "country": "France"
+      },
+      "sources": ["ra3945_113"],
+      "tags": ["deployment", "advance", "france"],
+      "edgar_relevance": "medium"
+    },
+    {
+      "id": "113_boulogne",
+      "date": "1944-09-15",
+      "end_date": "1944-10-01",
+      "unit_id": "113_haa_rgt",
+      "type": "deployment",
+      "category": "air_defence",
+      "name": "113 HAA Regiment at Boulogne",
+      "description": "Regiment deployed to cover Boulogne area.",
+      "location": {
+        "name": "Boulogne",
+        "lat": 50.7264,
+        "lng": 1.6147,
+        "country": "France"
+      },
+      "sources": ["ra3945_113"],
+      "tags": ["deployment", "advance", "france"],
+      "edgar_relevance": "high",
+      "related_places": ["boulogne"]
+    },
+    {
+      "id": "76_amiens",
+      "date": "1944-09-11",
+      "end_date": "1944-09-15",
+      "unit_id": "76_aa_bde",
+      "type": "deployment",
+      "category": "preparation",
+      "name": "Brigade concentrates at Amiens",
+      "description": "Armies advancing rapidly. 76th AA Bde gave up Dieppe and concentrated at Amiens under orders to prepare for AA defence of Antwerp.",
+      "location": {
+        "name": "Amiens",
+        "lat": 49.8941,
+        "lng": 2.2958,
+        "country": "France"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["deployment", "preparation", "antwerp"],
+      "edgar_relevance": "high",
+      "related_places": ["amiens"]
+    },
+    {
+      "id": "76_antwerp_move",
+      "date": "1944-10-15",
+      "end_date": null,
+      "unit_id": "76_aa_bde",
+      "type": "movement",
+      "category": "deployment",
+      "name": "Brigade moves to Antwerp",
+      "description": "76th AA Bde's move to Antwerp finally occurred, relieved by 80th AA Bde at Boulogne. Intended deployment area still in enemy hands.",
+      "location": {
+        "name": "Antwerp",
+        "lat": 51.2194,
+        "lng": 4.4025,
+        "country": "Belgium"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["movement", "antwerp", "belgium"],
+      "edgar_relevance": "high",
+      "related_places": ["antwerp"]
+    },
+    {
+      "id": "scheldt_ground_role",
+      "date": "1944-10-18",
+      "end_date": "1944-11-08",
+      "unit_id": "113_haa_rgt",
+      "type": "combat",
+      "category": "ground_support",
+      "name": "113 HAA Regiment in ground role at Scheldt",
+      "description": "Deployment area still in enemy hands, so 112th and 113th HAA Rgts operated in ground role supporting II Canadian Corps clearing south side of Scheldt Estuary. Guns in position by 18 October. Targets included church towers, farm buildings, pillboxes and emplacements.",
+      "location": {
+        "name": "Scheldt Estuary",
+        "lat": 51.3800,
+        "lng": 3.8000,
+        "country": "Belgium/Netherlands"
+      },
+      "sources": ["wiki_113haa", "wiki_76aabde"],
+      "tags": ["combat", "ground_role", "scheldt", "canadian_corps"],
+      "edgar_relevance": "high",
+      "related_diary_events": ["scheldt_battle"]
+    },
+    {
+      "id": "scheldt_evacuation_fire",
+      "date": "1944-10-30",
+      "end_date": null,
+      "unit_id": "362_haa_bty",
+      "type": "combat",
+      "category": "ground_support",
+      "name": "362 Battery fires on German evacuation",
+      "description": "Germans withdrawing from south side of Scheldt by sea. 362 Bty ordered to fire airburst high explosive shells over the evacuations.",
+      "location": {
+        "name": "Scheldt Estuary",
+        "lat": 51.3800,
+        "lng": 3.8000,
+        "country": "Netherlands"
+      },
+      "sources": ["wiki_113haa"],
+      "tags": ["combat", "ground_role", "scheldt", "evacuation"],
+      "edgar_relevance": "high"
+    },
+    {
+      "id": "walcheren_recon",
+      "date": "1944-11-01",
+      "end_date": "1944-11-05",
+      "unit_id": "113_haa_rgt",
+      "type": "operations",
+      "category": "reconnaissance",
+      "name": "362 and 366 Batteries ordered to Walcheren",
+      "description": "362 and 366 Batteries ordered to occupy positions on Walcheren at Vlissingen and Middelburg. Reconnaissance parties reported all routes flooded while western Walcheren still in enemy hands.",
+      "location": {
+        "name": "Walcheren (Vlissingen, Middelburg)",
+        "lat": 51.4500,
+        "lng": 3.5700,
+        "country": "Netherlands"
+      },
+      "sources": ["wiki_113haa"],
+      "tags": ["operations", "reconnaissance", "walcheren", "flooded"],
+      "edgar_relevance": "high",
+      "related_places": ["middelburg"]
+    },
+    {
+      "id": "76_scheldt_north",
+      "date": "1944-11-08",
+      "end_date": "1945-05-03",
+      "unit_id": "76_aa_bde",
+      "type": "deployment",
+      "category": "air_defence",
+      "name": "Brigade responsible for Scheldt North zone",
+      "description": "Once secure, the Gun Defended Area covering Antwerp and the estuary was established, with 76th AA Bde responsible for Scheldt North zone.",
+      "location": {
+        "name": "Scheldt Estuary / Antwerp",
+        "lat": 51.3500,
+        "lng": 4.2000,
+        "country": "Belgium/Netherlands"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["deployment", "air_defence", "antwerp", "scheldt"],
+      "edgar_relevance": "high",
+      "related_places": ["antwerp", "knokke", "zuid_beveland"]
+    },
+    {
+      "id": "operation_bodenplatte",
+      "date": "1945-01-01",
+      "end_date": null,
+      "unit_id": "76_aa_bde",
+      "type": "combat",
+      "category": "air_defence",
+      "name": "Operation Bodenplatte - 'Best day since formation'",
+      "description": "Luftwaffe launched daylight attacks against Allied airfields in support of Ardennes offensive. Between 09:20 and 09:54, 50-60 enemy aircraft (Bf 109 and Fw 190) came over brigade's area. War diary: 'This was the best day since our formation' - 15 aircraft claimed destroyed, others probably crashed in enemy territory.",
+      "location": {
+        "name": "Antwerp / Scheldt area",
+        "lat": 51.2194,
+        "lng": 4.4025,
+        "country": "Belgium"
+      },
+      "combat_stats": {
+        "enemy_aircraft_engaged": "50-60",
+        "aircraft_destroyed": 15,
+        "aircraft_probable": "several"
+      },
+      "sources": ["wiki_76aabde", "wiki_113haa"],
+      "tags": ["combat", "air_defence", "bodenplatte", "ardennes", "major_action"],
+      "edgar_relevance": "high"
+    },
+    {
+      "id": "midget_submarine",
+      "date": "1945-01-09",
+      "end_date": "1945-03-31",
+      "unit_id": "113_haa_rgt",
+      "type": "combat",
+      "category": "naval",
+      "name": "Anti-submarine actions",
+      "description": "Four Bofors of 411/124th LAA Bty hit and sank a German Biber midget submarine off South Beveland. Two others destroyed later - one by Bofors, one by 3.7-inch guns of 113th HAA Rgt, plus a manned torpedo.",
+      "location": {
+        "name": "South Beveland",
+        "lat": 51.4800,
+        "lng": 3.9000,
+        "country": "Netherlands"
+      },
+      "combat_stats": {
+        "submarines_destroyed": 3,
+        "manned_torpedoes_destroyed": 1
+      },
+      "sources": ["wiki_113haa", "wiki_76aabde"],
+      "tags": ["combat", "naval", "anti_submarine", "unusual_action"],
+      "edgar_relevance": "high",
+      "related_places": ["zuid_beveland"]
+    },
+    {
+      "id": "last_v1_antwerp",
+      "date": "1945-03-29",
+      "end_date": null,
+      "unit_id": "76_aa_bde",
+      "type": "event",
+      "category": "milestone",
+      "name": "Last V-1 lands at Antwerp",
+      "description": "The last V-1 flying bomb landed at Antwerp. AA defences in Belgium were then concentrated round the Scheldt.",
+      "location": {
+        "name": "Antwerp",
+        "lat": 51.2194,
+        "lng": 4.4025,
+        "country": "Belgium"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["milestone", "v_weapons", "antwerp"],
+      "edgar_relevance": "medium",
+      "related_places": ["antwerp"]
+    },
+    {
+      "id": "113_disbanded",
+      "date": "1945-04-30",
+      "end_date": null,
+      "unit_id": "113_haa_rgt",
+      "type": "disbandment",
+      "category": "administrative",
+      "name": "113 HAA Regiment disbanded",
+      "description": "113th and 146th HAA Regiments, 114th and 139th LAA Regts all disbanded.",
+      "location": null,
+      "sources": ["wiki_113haa", "wiki_76aabde"],
+      "tags": ["disbandment", "end_of_war"],
+      "edgar_relevance": "high"
+    },
+    {
+      "id": "76_ceasefire",
+      "date": "1945-05-03",
+      "end_date": null,
+      "unit_id": "76_aa_bde",
+      "type": "event",
+      "category": "ceasefire",
+      "name": "Brigade ordered to cease fire",
+      "description": "Local truce came into effect to allow supplies to be sent to civilians in enemy-occupied Holland (Operation Manna).",
+      "location": {
+        "name": "Netherlands",
+        "lat": 52.0000,
+        "lng": 5.0000,
+        "country": "Netherlands"
+      },
+      "sources": ["wiki_76aabde"],
+      "tags": ["ceasefire", "operation_manna", "end_of_war"],
+      "edgar_relevance": "high",
+      "related_diary_events": ["ve_day"]
+    },
+    {
+      "id": "76_disbanded",
+      "date": "1946-04-30",
+      "end_date": null,
+      "unit_id": "76_aa_bde",
+      "type": "disbandment",
+      "category": "administrative",
+      "name": "76 AA Brigade disbanded",
+      "description": "Brigade disbanded in occupied Germany.",
+      "location": {
+        "name": "Germany",
+        "lat": 52.5200,
+        "lng": 13.4050,
+        "country": "Germany"
+      },
+      "sources": ["ra3945_76"],
+      "tags": ["disbandment", "occupation"],
+      "edgar_relevance": "medium"
+    }
+  ],
+
+  "classification_schema": {
+    "event_types": [
+      "formation",
+      "disbandment",
+      "mobilisation",
+      "reorganisation",
+      "deployment",
+      "movement",
+      "embarkation",
+      "combat",
+      "operations",
+      "event"
+    ],
+    "event_categories": [
+      "administrative",
+      "air_defence",
+      "amphibious_assault",
+      "ground_support",
+      "naval",
+      "intelligence",
+      "support",
+      "preparation",
+      "movement",
+      "relief",
+      "buildup",
+      "equipment_capture",
+      "reconnaissance",
+      "milestone",
+      "ceasefire"
+    ],
+    "edgar_relevance_levels": [
+      "none",
+      "low",
+      "medium",
+      "high"
+    ],
+    "source_reliability": [
+      "primary",
+      "secondary",
+      "tertiary"
+    ],
+    "tags": {
+      "theatre": ["home_front", "normandy", "france", "belgium", "netherlands", "germany"],
+      "operation": ["blitz", "overlord", "dday", "scheldt", "bodenplatte", "operation_manna"],
+      "action_type": ["air_defence", "ground_role", "anti_submarine", "radar", "searchlights"],
+      "significance": ["major_action", "intense_action", "unusual_action", "milestone"]
+    }
+  }
+}
