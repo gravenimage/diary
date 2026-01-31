@@ -66,6 +66,7 @@ diary/
 ├── places.json                 # Location data (35 places)
 ├── data/
 │   ├── timeline.json          # Timeline events (historical + diary)
+│   ├── unit_history.json      # Military unit records and events
 │   └── event_maps/            # SVG maps (legacy, not currently used)
 ├── scripts/
 │   ├── research_events.py     # Generate base timeline data
@@ -151,6 +152,82 @@ Timeline events with two types: `historical` and `diary`.
 }
 ```
 
+### data/unit_history.json
+
+Official military unit history for Edgar's regiment and brigade. Contains four main sections:
+
+**Sources** - Reference materials with reliability ratings:
+```json
+{
+  "id": "wiki_113haa",
+  "type": "encyclopedia",
+  "title": "113th Heavy Anti-Aircraft Regiment, Royal Artillery",
+  "url": "https://en.wikipedia.org/wiki/...",
+  "accessed": "2026-01-31",
+  "reliability": "secondary"
+}
+```
+
+**Units** - Military unit definitions:
+```json
+{
+  "id": "113_haa_rgt",
+  "designation": "113th Heavy Anti-Aircraft Regiment, Royal Artillery (TA)",
+  "short_name": "113 HAA Rgt",
+  "type": "regiment",
+  "branch": "Royal Artillery",
+  "role": "heavy_anti-aircraft",
+  "formed": "1940-11-25",
+  "disbanded": "1945-04-30",
+  "parent_unit": "76_aa_bde",
+  "subordinate_units": ["362_haa_bty", "366_haa_bty", "391_haa_bty"],
+  "equipment": ["3.7-inch AA gun (24 guns total)"]
+}
+```
+
+**Events** - Unit operational history:
+```json
+{
+  "id": "dday_gold_beach",
+  "date": "1944-06-06",
+  "unit_id": "76_aa_bde",
+  "type": "combat",
+  "category": "amphibious_assault",
+  "name": "D-Day: 76 AA Brigade lands on Gold Beach",
+  "description": "76th AA Bde supported XXX Corps landing on Gold Beach...",
+  "location": {
+    "name": "Gold Beach, Normandy",
+    "lat": 49.34,
+    "lng": -0.63,
+    "country": "France"
+  },
+  "sources": ["wiki_76aabde", "wiki_113haa"],
+  "tags": ["combat", "dday", "overlord", "gold_beach"],
+  "edgar_relevance": "high",
+  "related_diary_events": ["dday", "edgar_lands"]
+}
+```
+
+**Classification Schema** - Controlled vocabularies:
+- `event_types`: formation, combat, deployment, movement, etc.
+- `event_categories`: air_defence, ground_support, amphibious_assault, etc.
+- `edgar_relevance_levels`: none, low, medium, high
+- `source_reliability`: primary, secondary, tertiary
+- `tags`: theatre, operation, action_type, significance
+
+**Units documented:**
+- 76th Anti-Aircraft Brigade (parent formation)
+- 113th Heavy Anti-Aircraft Regiment (Edgar's regiment)
+- 362, 366, 391 HAA Batteries (constituent batteries)
+
+**Events documented (26 total):**
+- Formation and training (1940-1943)
+- D-Day and Normandy campaign (June-August 1944)
+- Advance through France (September 1944)
+- Battle of the Scheldt (October-November 1944)
+- Antwerp defence and Operation Bodenplatte (1944-1945)
+- End of war and disbandment (1945-1946)
+
 ---
 
 ## Features
@@ -179,6 +256,11 @@ Timeline events with two types: `historical` and `diary`.
 - Location mentions are highlighted and clickable
 - Clicking a location pans map and opens popup
 - Locations dim/brighten based on timeline selection
+
+### Version Indicator
+- Git commit hash and build date displayed next to diary title
+- Hover tooltip shows full version details
+- Helps verify which version is deployed to GitHub Pages
 
 ---
 
