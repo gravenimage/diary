@@ -3,7 +3,8 @@
 Generate an interactive HTML map application from Edgar Hopkins' WW2 diary.
 
 Reads the diary markdown and places.json, then generates a single self-contained
-HTML file with an interactive Leaflet map alongside the diary text.
+HTML file with an interactive Leaflet map alongside the diary text, with a
+timeline slider for filtering by date.
 """
 
 import json
@@ -24,6 +25,13 @@ def load_places(path: Path) -> list[dict]:
     """Load places data from JSON file."""
     data = json.loads(path.read_text(encoding="utf-8"))
     return data["places"]
+
+
+def load_timeline(path: Path) -> dict:
+    """Load timeline data from JSON file."""
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    return {"events": [], "metadata": {"date_range": {"start": "1943-12-01", "end": "1946-02-18"}}}
 
 
 def create_keyword_pattern(places: list[dict]) -> re.Pattern:
@@ -90,9 +98,10 @@ def wrap_locations_in_html(html: str, places: list[dict]) -> str:
     return "".join(parts)
 
 
-def generate_html(diary_html: str, places: list[dict]) -> str:
+def generate_html(diary_html: str, places: list[dict], timeline: dict) -> str:
     """Generate the complete HTML application."""
     places_json = json.dumps(places, indent=2)
+    timeline_json = json.dumps(timeline, indent=2)
 
     return f'''<!DOCTYPE html>
 <html lang="en">
@@ -104,6 +113,8 @@ def generate_html(diary_html: str, places: list[dict]) -> str:
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
     <style>
         * {{
             margin: 0;
@@ -134,11 +145,155 @@ def generate_html(diary_html: str, places: list[dict]) -> str:
         .map-panel {{
             width: 50%;
             height: 100%;
+            display: flex;
+            flex-direction: column;
         }}
 
         #map {{
             width: 100%;
-            height: 100%;
+            flex: 1;
+        }}
+
+        .timeline-container {{
+            padding: 1rem 1.5rem 1.5rem;
+            background: #f5f5f5;
+            border-top: 1px solid #ddd;
+        }}
+
+        .timeline-controls {{
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }}
+
+        .timeline-btn {{
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            font-family: Georgia, serif;
+            border: 1px solid #8b4513;
+            background: white;
+            color: #8b4513;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }}
+
+        .timeline-btn:hover {{
+            background: #8b4513;
+            color: white;
+        }}
+
+        .timeline-btn.active {{
+            background: #8b4513;
+            color: white;
+        }}
+
+        .play-btn {{
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }}
+
+        .timeline-date-display {{
+            flex: 1;
+            text-align: right;
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }}
+
+        #timeline-slider {{
+            margin: 0.5rem 0;
+        }}
+
+        .noUi-connect {{
+            background: #8b4513;
+        }}
+
+        .noUi-handle {{
+            border-color: #8b4513;
+        }}
+
+        .noUi-horizontal {{
+            height: 12px;
+        }}
+
+        .noUi-horizontal .noUi-handle {{
+            width: 20px;
+            height: 20px;
+            top: -5px;
+            border-radius: 50%;
+        }}
+
+        .noUi-target {{
+            background: #e0e0e0;
+            border: none;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }}
+
+        .timeline-labels {{
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.5rem;
+        }}
+
+        .event-markers {{
+            position: relative;
+            height: 20px;
+            margin-bottom: 0.25rem;
+        }}
+
+        .event-dot {{
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }}
+
+        .event-dot:hover {{
+            transform: translateX(-50%) scale(1.5);
+        }}
+
+        .event-dot.historical {{
+            background: #2980b9;
+            top: 0;
+        }}
+
+        .event-dot.diary {{
+            background: #c0392b;
+            top: 10px;
+        }}
+
+        .event-tooltip {{
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+        }}
+
+        .event-dot:hover .event-tooltip {{
+            opacity: 1;
         }}
 
         .diary-content {{
@@ -200,6 +355,11 @@ def generate_html(diary_html: str, places: list[dict]) -> str:
             font-weight: bold;
         }}
 
+        .location.dimmed {{
+            opacity: 0.3;
+            background: linear-gradient(to bottom, transparent 60%, #ddd 60%);
+        }}
+
         .leaflet-popup-content {{
             font-family: Georgia, serif;
             line-height: 1.5;
@@ -255,6 +415,14 @@ def generate_html(diary_html: str, places: list[dict]) -> str:
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }}
 
+        .marker-dimmed {{
+            opacity: 0.2;
+        }}
+
+        .journey-segment {{
+            transition: opacity 0.3s ease;
+        }}
+
         @media (max-width: 900px) {{
             .container {{
                 flex-direction: column;
@@ -269,6 +437,16 @@ def generate_html(diary_html: str, places: list[dict]) -> str:
                 border-right: none;
                 border-bottom: 1px solid #ddd;
             }}
+
+            .timeline-controls {{
+                flex-wrap: wrap;
+            }}
+
+            .timeline-date-display {{
+                width: 100%;
+                text-align: center;
+                margin-top: 0.5rem;
+            }}
         }}
     </style>
 </head>
@@ -281,11 +459,54 @@ def generate_html(diary_html: str, places: list[dict]) -> str:
         </div>
         <div class="map-panel">
             <div id="map"></div>
+            <div class="timeline-container">
+                <div class="timeline-controls">
+                    <button class="timeline-btn play-btn" id="play-btn" title="Play animation">&#9658;</button>
+                    <button class="timeline-btn" id="btn-dday">D-Day</button>
+                    <button class="timeline-btn" id="btn-veday">VE Day</button>
+                    <button class="timeline-btn" id="btn-full">Full Journey</button>
+                    <div class="timeline-date-display" id="date-display">December 1943 - February 1946</div>
+                </div>
+                <div class="event-markers" id="event-markers"></div>
+                <div id="timeline-slider"></div>
+                <div class="timeline-labels">
+                    <span>Dec 1943</span>
+                    <span>Jun 1944</span>
+                    <span>Dec 1944</span>
+                    <span>Jun 1945</span>
+                    <span>Feb 1946</span>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
         const places = {places_json};
+        const timeline = {timeline_json};
+
+        // Date utilities
+        const minDate = new Date('1943-12-01');
+        const maxDate = new Date('1946-02-18');
+        const dateRange = maxDate - minDate;
+
+        function dateToTimestamp(dateStr) {{
+            return new Date(dateStr).getTime();
+        }}
+
+        function timestampToDate(ts) {{
+            return new Date(ts);
+        }}
+
+        function formatDate(date) {{
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+            return months[date.getMonth()] + ' ' + date.getFullYear();
+        }}
+
+        function dateToPercent(dateStr) {{
+            const d = new Date(dateStr);
+            return ((d - minDate) / dateRange) * 100;
+        }}
 
         // Country colors for markers
         const countryColors = {{
@@ -307,6 +528,7 @@ def generate_html(diary_html: str, places: list[dict]) -> str:
 
         // Store markers by place ID
         const markers = {{}};
+        const markerElements = {{}};
 
         // Create custom icon function
         function createIcon(color) {{
@@ -391,31 +613,217 @@ def generate_html(diary_html: str, places: list[dict]) -> str:
             }});
         }});
 
-        // Draw journey path
-        const journeyCoords = places
-            .filter(p => p.id !== 'middleton' && p.id !== 'southend') // Skip non-journey locations
-            .map(p => [p.lat, p.lng]);
-
-        // Create a simplified route (chronological order based on the array order)
+        // Journey route order (chronological)
         const routeOrder = [
             'southampton', 'crepon', 'le_hamel', 'arromanches', 'bayeux', 'creully', 'caen',
             'falaise', 'argentan', 'laigle', 'amiens', 'boulogne', 'desvres', 'calais',
-            'bruges', 'knokke', 'kapelle', 'antwerp', 'nieuport', 'goes', 'zuid_beveland',
-            'middelburg', 'louvain', 'brussels', 'namur', 'wesel', 'munster', 'bielefeld',
-            'brunswick', 'hanover', 'berlin', 'dover', 'middleton'
+            'bruges', 'knokke', 'goes', 'zuid_beveland', 'middelburg',
+            'brussels', 'nieuport', 'antwerp', 'kapelle', 'namur', 'louvain',
+            'wesel', 'munster', 'bielefeld', 'brunswick', 'hanover', 'berlin', 'dover'
         ];
 
-        const routeCoords = routeOrder
+        // Create journey segments with date info
+        const journeySegments = [];
+        const routePlaces = routeOrder
             .map(id => places.find(p => p.id === id))
-            .filter(p => p)
-            .map(p => [p.lat, p.lng]);
+            .filter(p => p && p.start_date);
 
-        L.polyline(routeCoords, {{
-            color: '#8b4513',
-            weight: 2,
-            opacity: 0.5,
-            dashArray: '5, 10'
-        }}).addTo(map);
+        for (let i = 0; i < routePlaces.length - 1; i++) {{
+            const from = routePlaces[i];
+            const to = routePlaces[i + 1];
+            const segmentDate = to.start_date; // Use arrival date for segment
+
+            const polyline = L.polyline([
+                [from.lat, from.lng],
+                [to.lat, to.lng]
+            ], {{
+                color: '#8b4513',
+                weight: 2,
+                opacity: 0.5,
+                dashArray: '5, 10',
+                className: 'journey-segment'
+            }}).addTo(map);
+
+            journeySegments.push({{
+                polyline: polyline,
+                date: segmentDate,
+                from: from.id,
+                to: to.id
+            }});
+        }}
+
+        // Initialize timeline slider
+        const slider = document.getElementById('timeline-slider');
+        noUiSlider.create(slider, {{
+            start: [minDate.getTime(), maxDate.getTime()],
+            connect: true,
+            range: {{
+                'min': minDate.getTime(),
+                'max': maxDate.getTime()
+            }},
+            step: 24 * 60 * 60 * 1000 // 1 day
+        }});
+
+        // Event markers
+        const eventMarkersContainer = document.getElementById('event-markers');
+        timeline.events.forEach(event => {{
+            const percent = dateToPercent(event.date);
+            if (percent >= 0 && percent <= 100) {{
+                const dot = document.createElement('div');
+                dot.className = `event-dot ${{event.type}}`;
+                dot.style.left = `${{percent}}%`;
+                dot.innerHTML = `<div class="event-tooltip">${{event.name}}<br><small>${{event.date}}</small></div>`;
+                dot.addEventListener('click', () => {{
+                    const eventDate = new Date(event.date).getTime();
+                    const rangeWidth = 30 * 24 * 60 * 60 * 1000; // 30 days window
+                    slider.noUiSlider.set([eventDate - rangeWidth/2, eventDate + rangeWidth/2]);
+                }});
+                eventMarkersContainer.appendChild(dot);
+            }}
+        }});
+
+        // Update display based on slider
+        function updateTimeline(values) {{
+            const startTs = parseInt(values[0]);
+            const endTs = parseInt(values[1]);
+            const startDate = timestampToDate(startTs);
+            const endDate = timestampToDate(endTs);
+
+            // Update date display
+            document.getElementById('date-display').textContent =
+                formatDate(startDate) + ' - ' + formatDate(endDate);
+
+            // Filter markers
+            places.forEach(place => {{
+                const marker = markers[place.id];
+                if (!marker) return;
+
+                const markerEl = marker.getElement();
+                if (!markerEl) return;
+
+                // Check if place is within date range
+                let visible = false;
+                if (place.start_date === null) {{
+                    // Home (Middleton) - always visible
+                    visible = true;
+                }} else {{
+                    const placeStart = new Date(place.start_date).getTime();
+                    const placeEnd = new Date(place.end_date).getTime();
+                    // Show if any overlap with selected range
+                    visible = placeStart <= endTs && placeEnd >= startTs;
+                }}
+
+                if (visible) {{
+                    markerEl.classList.remove('marker-dimmed');
+                    markerEl.style.opacity = '1';
+                }} else {{
+                    markerEl.classList.add('marker-dimmed');
+                    markerEl.style.opacity = '0.2';
+                }}
+            }});
+
+            // Filter journey segments
+            journeySegments.forEach(segment => {{
+                const segmentDate = new Date(segment.date).getTime();
+                if (segmentDate <= endTs && segmentDate >= startTs) {{
+                    segment.polyline.setStyle({{ opacity: 0.7 }});
+                }} else if (segmentDate <= endTs) {{
+                    segment.polyline.setStyle({{ opacity: 0.3 }});
+                }} else {{
+                    segment.polyline.setStyle({{ opacity: 0.1 }});
+                }}
+            }});
+
+            // Dim text locations outside date range
+            document.querySelectorAll('.location').forEach(span => {{
+                const placeId = span.dataset.placeId;
+                const place = places.find(p => p.id === placeId);
+                if (!place) return;
+
+                let visible = false;
+                if (place.start_date === null) {{
+                    visible = true;
+                }} else {{
+                    const placeStart = new Date(place.start_date).getTime();
+                    const placeEnd = new Date(place.end_date).getTime();
+                    visible = placeStart <= endTs && placeEnd >= startTs;
+                }}
+
+                if (visible) {{
+                    span.classList.remove('dimmed');
+                }} else {{
+                    span.classList.add('dimmed');
+                }}
+            }});
+        }}
+
+        slider.noUiSlider.on('update', updateTimeline);
+
+        // Quick jump buttons
+        document.getElementById('btn-dday').addEventListener('click', () => {{
+            const ddayDate = new Date('1944-06-06').getTime();
+            const rangeWidth = 60 * 24 * 60 * 60 * 1000; // 60 days
+            slider.noUiSlider.set([ddayDate - 7 * 24 * 60 * 60 * 1000, ddayDate + rangeWidth]);
+        }});
+
+        document.getElementById('btn-veday').addEventListener('click', () => {{
+            const vedayDate = new Date('1945-05-08').getTime();
+            const rangeWidth = 30 * 24 * 60 * 60 * 1000; // 30 days
+            slider.noUiSlider.set([vedayDate - rangeWidth/2, vedayDate + rangeWidth/2]);
+        }});
+
+        document.getElementById('btn-full').addEventListener('click', () => {{
+            slider.noUiSlider.set([minDate.getTime(), maxDate.getTime()]);
+        }});
+
+        // Play animation
+        let isPlaying = false;
+        let animationFrame = null;
+        const playBtn = document.getElementById('play-btn');
+
+        function animate() {{
+            const values = slider.noUiSlider.get();
+            const currentEnd = parseInt(values[1]);
+            const step = 7 * 24 * 60 * 60 * 1000; // 1 week per frame
+
+            if (currentEnd < maxDate.getTime()) {{
+                const newEnd = Math.min(currentEnd + step, maxDate.getTime());
+                slider.noUiSlider.set([minDate.getTime(), newEnd]);
+                animationFrame = setTimeout(animate, 100);
+            }} else {{
+                stopAnimation();
+            }}
+        }}
+
+        function startAnimation() {{
+            isPlaying = true;
+            playBtn.innerHTML = '&#10074;&#10074;'; // Pause icon
+            playBtn.classList.add('active');
+            // Reset to start
+            slider.noUiSlider.set([minDate.getTime(), minDate.getTime() + 30 * 24 * 60 * 60 * 1000]);
+            animate();
+        }}
+
+        function stopAnimation() {{
+            isPlaying = false;
+            playBtn.innerHTML = '&#9658;'; // Play icon
+            playBtn.classList.remove('active');
+            if (animationFrame) {{
+                clearTimeout(animationFrame);
+                animationFrame = null;
+            }}
+        }}
+
+        playBtn.addEventListener('click', () => {{
+            if (isPlaying) {{
+                stopAnimation();
+            }} else {{
+                startAnimation();
+            }}
+        }});
+
+        // Initial update
+        updateTimeline([minDate.getTime(), maxDate.getTime()]);
     </script>
 </body>
 </html>
@@ -426,6 +834,7 @@ def main():
     base_dir = Path(__file__).parent
     diary_path = base_dir / "complete-diary.md"
     places_path = base_dir / "places.json"
+    timeline_path = base_dir / "data" / "timeline.json"
     output_path = base_dir / "index.html"
 
     print("Loading diary...")
@@ -435,11 +844,15 @@ def main():
     places = load_places(places_path)
     print(f"  Found {len(places)} locations")
 
+    print("Loading timeline...")
+    timeline = load_timeline(timeline_path)
+    print(f"  Found {len(timeline['events'])} events")
+
     print("Processing diary text...")
     diary_html = wrap_locations_in_html(diary_html, places)
 
     print("Generating HTML...")
-    html = generate_html(diary_html, places)
+    html = generate_html(diary_html, places, timeline)
 
     print(f"Writing output to {output_path}...")
     output_path.write_text(html, encoding="utf-8")

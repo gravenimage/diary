@@ -8,6 +8,8 @@
           integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
             integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/nouislider@15.7.1/dist/nouislider.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -38,11 +40,155 @@
         .map-panel {
             width: 50%;
             height: 100%;
+            display: flex;
+            flex-direction: column;
         }
 
         #map {
             width: 100%;
-            height: 100%;
+            flex: 1;
+        }
+
+        .timeline-container {
+            padding: 1rem 1.5rem 1.5rem;
+            background: #f5f5f5;
+            border-top: 1px solid #ddd;
+        }
+
+        .timeline-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .timeline-btn {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+            font-family: Georgia, serif;
+            border: 1px solid #8b4513;
+            background: white;
+            color: #8b4513;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .timeline-btn:hover {
+            background: #8b4513;
+            color: white;
+        }
+
+        .timeline-btn.active {
+            background: #8b4513;
+            color: white;
+        }
+
+        .play-btn {
+            width: 36px;
+            height: 36px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .timeline-date-display {
+            flex: 1;
+            text-align: right;
+            font-size: 0.9rem;
+            color: #666;
+            font-style: italic;
+        }
+
+        #timeline-slider {
+            margin: 0.5rem 0;
+        }
+
+        .noUi-connect {
+            background: #8b4513;
+        }
+
+        .noUi-handle {
+            border-color: #8b4513;
+        }
+
+        .noUi-horizontal {
+            height: 12px;
+        }
+
+        .noUi-horizontal .noUi-handle {
+            width: 20px;
+            height: 20px;
+            top: -5px;
+            border-radius: 50%;
+        }
+
+        .noUi-target {
+            background: #e0e0e0;
+            border: none;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .timeline-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 0.5rem;
+        }
+
+        .event-markers {
+            position: relative;
+            height: 20px;
+            margin-bottom: 0.25rem;
+        }
+
+        .event-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .event-dot:hover {
+            transform: translateX(-50%) scale(1.5);
+        }
+
+        .event-dot.historical {
+            background: #2980b9;
+            top: 0;
+        }
+
+        .event-dot.diary {
+            background: #c0392b;
+            top: 10px;
+        }
+
+        .event-tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            z-index: 1000;
+        }
+
+        .event-dot:hover .event-tooltip {
+            opacity: 1;
         }
 
         .diary-content {
@@ -104,6 +250,11 @@
             font-weight: bold;
         }
 
+        .location.dimmed {
+            opacity: 0.3;
+            background: linear-gradient(to bottom, transparent 60%, #ddd 60%);
+        }
+
         .leaflet-popup-content {
             font-family: Georgia, serif;
             line-height: 1.5;
@@ -159,6 +310,14 @@
             box-shadow: 0 1px 3px rgba(0,0,0,0.3);
         }
 
+        .marker-dimmed {
+            opacity: 0.2;
+        }
+
+        .journey-segment {
+            transition: opacity 0.3s ease;
+        }
+
         @media (max-width: 900px) {
             .container {
                 flex-direction: column;
@@ -172,6 +331,16 @@
             .diary-panel {
                 border-right: none;
                 border-bottom: 1px solid #ddd;
+            }
+
+            .timeline-controls {
+                flex-wrap: wrap;
+            }
+
+            .timeline-date-display {
+                width: 100%;
+                text-align: center;
+                margin-top: 0.5rem;
             }
         }
     </style>
@@ -350,6 +519,24 @@
         </div>
         <div class="map-panel">
             <div id="map"></div>
+            <div class="timeline-container">
+                <div class="timeline-controls">
+                    <button class="timeline-btn play-btn" id="play-btn" title="Play animation">&#9658;</button>
+                    <button class="timeline-btn" id="btn-dday">D-Day</button>
+                    <button class="timeline-btn" id="btn-veday">VE Day</button>
+                    <button class="timeline-btn" id="btn-full">Full Journey</button>
+                    <div class="timeline-date-display" id="date-display">December 1943 - February 1946</div>
+                </div>
+                <div class="event-markers" id="event-markers"></div>
+                <div id="timeline-slider"></div>
+                <div class="timeline-labels">
+                    <span>Dec 1943</span>
+                    <span>Jun 1944</span>
+                    <span>Dec 1944</span>
+                    <span>Jun 1945</span>
+                    <span>Feb 1946</span>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -363,6 +550,8 @@
     "lng": -1.4044,
     "country": "England",
     "date_range": "May 22 - June 1, 1944",
+    "start_date": "1944-05-22",
+    "end_date": "1944-06-01",
     "summary": "Embarkation point for the invasion. Stayed in a camp in the woods awaiting D-Day, the camp was sealed on May 27th preventing any further leave.",
     "keywords": [
       "Southampton"
@@ -376,6 +565,8 @@
     "lng": 0.7077,
     "country": "England",
     "date_range": "Late 1943 - May 1944",
+    "start_date": "1943-12-01",
+    "end_date": "1944-05-21",
     "summary": "Pre-invasion station where Edgar spent five months. Made friends with Mrs Woodlands and hoped to have Winnie visit before deployment.",
     "keywords": [
       "Southend"
@@ -389,6 +580,8 @@
     "lng": -1.9761,
     "country": "England",
     "date_range": "Home",
+    "start_date": null,
+    "end_date": null,
     "summary": "Edgar's home town. The bells of Crepon Church reminded him of those at Middleton. Home to Winnie and his family.",
     "keywords": [
       "Middleton"
@@ -402,6 +595,8 @@
     "lng": -0.5333,
     "country": "France",
     "date_range": "June 7 - August 31, 1944",
+    "start_date": "1944-06-07",
+    "end_date": "1944-08-31",
     "summary": "First gun position after D-Day landing. Defended the beach head with AA guns against heavy night raids. Visited the church and village cinema during rest periods.",
     "keywords": [
       "Crepon",
@@ -416,6 +611,8 @@
     "lng": -0.6111,
     "country": "France",
     "date_range": "June 1944",
+    "start_date": "1944-06-07",
+    "end_date": "1944-06-30",
     "summary": "Small village near the landing beach, badly damaged during the assault. One of the villages that 'caught the full blast' of D-Day.",
     "keywords": [
       "Le Hamel",
@@ -430,6 +627,8 @@
     "lng": -0.7024,
     "country": "France",
     "date_range": "July 17, 1944",
+    "start_date": "1944-07-17",
+    "end_date": "1944-07-17",
     "summary": "First visit on July 17th. Found the cathedral beautiful but the town had narrow streets and unpleasant smells. Bought red butter and cheese at 400 francs.",
     "keywords": [
       "Bayeux"
@@ -443,6 +642,8 @@
     "lng": -0.3707,
     "country": "France",
     "date_range": "July 1944",
+    "start_date": "1944-07-08",
+    "end_date": "1944-07-31",
     "summary": "Major bombing target. Witnessed over 500 Lancasters and Halifaxes bomb the city on July 8th. A recreation shed was salvaged from a site near Caen.",
     "keywords": [
       "Caen"
@@ -456,6 +657,8 @@
     "lng": -0.6228,
     "country": "France",
     "date_range": "August 1944",
+    "start_date": "1944-08-01",
+    "end_date": "1944-08-31",
     "summary": "Beach unloading work helping with the Mulberry harbour operations. Enjoyed swimming at the same beach where they landed on D-Day. Saw graves of fallen soldiers.",
     "keywords": [
       "Arromanches"
@@ -469,6 +672,8 @@
     "lng": -0.5347,
     "country": "France",
     "date_range": "July-August 1944",
+    "start_date": "1944-07-01",
+    "end_date": "1944-08-31",
     "summary": "About 5 miles from Crepon. Visited for the first ENSA show in France. Had coffee in a fly-filled cafe and bought butter from a local farm.",
     "keywords": [
       "Creully",
@@ -483,6 +688,8 @@
     "lng": -0.1967,
     "country": "France",
     "date_range": "August 31, 1944",
+    "start_date": "1944-08-31",
+    "end_date": "1944-08-31",
     "summary": "Passed through on the 200-mile journey from Crepon. 'Very badly knocked about' - one heap of rubble from Allied bombing.",
     "keywords": [
       "Falaise"
@@ -496,6 +703,8 @@
     "lng": -0.0194,
     "country": "France",
     "date_range": "August 31, 1944",
+    "start_date": "1944-08-31",
+    "end_date": "1944-08-31",
     "summary": "Route marker on the journey from Normandy to Amiens. Part of the 200-mile convoy move.",
     "keywords": [
       "Argentan",
@@ -510,6 +719,8 @@
     "lng": 0.6264,
     "country": "France",
     "date_range": "August 31, 1944",
+    "start_date": "1944-08-31",
+    "end_date": "1944-08-31",
     "summary": "Route marker on the journey to Amiens. The people further inland were 'very pleased to see the British' compared to the dour Normandy folk.",
     "keywords": [
       "L'Aigle",
@@ -525,6 +736,8 @@
     "lng": 2.2958,
     "country": "France",
     "date_range": "September 2-23, 1944",
+    "start_date": "1944-09-02",
+    "end_date": "1944-09-23",
     "summary": "Gun position on high chalky ground with the beautiful cathedral as a landmark. Had a night out enjoying cafes with accordion music. FFI rounding up snipers in the woods.",
     "keywords": [
       "Amiens",
@@ -539,6 +752,8 @@
     "lng": 1.6147,
     "country": "France",
     "date_range": "September 24 - October 16, 1944",
+    "start_date": "1944-09-24",
+    "end_date": "1944-10-16",
     "summary": "Stationed 2 miles from the devastated city. 'Never have I seen such places so badly bombed.' Buried a German officer and Canadian soldier. Could see the White Cliffs of Dover.",
     "keywords": [
       "Boulogne"
@@ -552,6 +767,8 @@
     "lng": 1.8587,
     "country": "France",
     "date_range": "September 26, 1944",
+    "start_date": "1944-09-26",
+    "end_date": "1944-09-26",
     "summary": "Watched Lancasters and Halifaxes bombing Calais from Boulogne with no opposition. Could see across to England's White Cliffs.",
     "keywords": [
       "Calais"
@@ -565,6 +782,8 @@
     "lng": 1.8333,
     "country": "France",
     "date_range": "October 9 & 14, 1944",
+    "start_date": "1944-10-09",
+    "end_date": "1944-10-14",
     "summary": "Out of bounds industrial town 10 miles away. Met George Ruffin, a friendly cycle shop owner who had saved whisky since 1940 for English soldiers.",
     "keywords": [
       "Desvres",
@@ -579,6 +798,8 @@
     "lng": 3.2247,
     "country": "Belgium",
     "date_range": "October 17, 1944",
+    "start_date": "1944-10-17",
+    "end_date": "1944-10-17",
     "summary": "Arrived on Edgar's birthday in terrible weather. A big city with plenty in the shops. Went to pictures to see 'Alloah' and explored the city with Alec.",
     "keywords": [
       "Bruges"
@@ -592,6 +813,8 @@
     "lng": 3.2917,
     "country": "Belgium",
     "date_range": "October-November 1944",
+    "start_date": "1944-10-17",
+    "end_date": "1944-11-02",
     "summary": "Port where Germans held out. Guns used for ground shooting as field artillery, firing over 200 rounds to destroy German positions and ammo dumps.",
     "keywords": [
       "Knokke"
@@ -605,6 +828,8 @@
     "lng": 4.3517,
     "country": "Belgium",
     "date_range": "February 1945",
+    "start_date": "1945-02-18",
+    "end_date": "1945-02-20",
     "summary": "48-hour leave stay at the Albert Hotel. Took a conducted tour of the city. Air raid warnings from V-1 flying bombs but all clear soon followed.",
     "keywords": [
       "Brussels",
@@ -619,6 +844,8 @@
     "lng": 4.7005,
     "country": "Belgium",
     "date_range": "May 16 - June 21, 1945",
+    "start_date": "1945-05-16",
+    "end_date": "1945-06-21",
     "summary": "Transit camp in schools awaiting posting to Berlin. Pleasant walks, cinema visits, and befriended a jolly 60-year-old Belgian caretaker. Watched civilians dance to 'Tipperary'.",
     "keywords": [
       "Louvain",
@@ -633,6 +860,8 @@
     "lng": 4.4025,
     "country": "Belgium",
     "date_range": "April 1945",
+    "start_date": "1945-04-14",
+    "end_date": "1945-04-17",
     "summary": "Gun graveyard on an aerodrome where hundreds of 3.7 and Bofors guns were greased for storage. Enjoyed swimming baths and witnessed VE Day celebrations.",
     "keywords": [
       "Antwerp"
@@ -646,6 +875,8 @@
     "lng": 4.4167,
     "country": "Belgium",
     "date_range": "April 17 - May 1945",
+    "start_date": "1945-04-17",
+    "end_date": "1945-05-16",
     "summary": "8 miles from Antwerp. Witnessed VE Day here - sirens sounded after midnight. Saw civilians ransacking collaborators' houses on May 13th.",
     "keywords": [
       "Kapelle",
@@ -662,6 +893,8 @@
     "lng": 2.7506,
     "country": "Belgium",
     "date_range": "April 15-17, 1945",
+    "start_date": "1945-04-15",
+    "end_date": "1945-04-17",
     "summary": "Firing camp 10 miles from Ostende. Stationed in a big school with wooden beds. Guns put into action for practice before 'Cease Firing' order came through.",
     "keywords": [
       "Nieuport",
@@ -676,6 +909,8 @@
     "lng": 4.872,
     "country": "Belgium",
     "date_range": "May 1945",
+    "start_date": "1945-05-16",
+    "end_date": "1945-05-16",
     "summary": "Brief stop at an American camp before being redirected to Louvain. Part of the usual army mix-up.",
     "keywords": [
       "Namur"
@@ -689,6 +924,8 @@
     "lng": 3.8889,
     "country": "Netherlands",
     "date_range": "November 3, 1944",
+    "start_date": "1944-11-03",
+    "end_date": "1944-11-03",
     "summary": "Rest stop to brew tea and eat biscuits and corned beef on the journey to Zuid Beveland.",
     "keywords": [
       "Goes"
@@ -702,6 +939,8 @@
     "lng": 3.9167,
     "country": "Netherlands",
     "date_range": "November 4, 1944 - April 1945",
+    "start_date": "1944-11-04",
+    "end_date": "1945-04-14",
     "summary": "Gun position on a dyke in front of the sea. Very bleak and cold. Slept in a big granary vacated by Germans. Buried an unknown artillery man washed up on shore.",
     "keywords": [
       "Zuid Beveland",
@@ -717,6 +956,8 @@
     "lng": 3.6136,
     "country": "Netherlands",
     "date_range": "1945",
+    "start_date": "1945-02-01",
+    "end_date": "1945-02-28",
     "summary": "Had a photograph taken here in new kit, which was sent home to Winnie.",
     "keywords": [
       "Middelburg",
@@ -731,6 +972,8 @@
     "lng": 6.6228,
     "country": "Germany",
     "date_range": "June 21, 1945",
+    "start_date": "1945-06-21",
+    "end_date": "1945-06-21",
     "summary": "Crossed the Rhine here on a Royal Engineers bridge. 'A heap of rubble' - saw great locomotives tipped on end and burnt out railway carriages.",
     "keywords": [
       "Wesel"
@@ -744,6 +987,8 @@
     "lng": 7.6261,
     "country": "Germany",
     "date_range": "June 21, 1945",
+    "start_date": "1945-06-21",
+    "end_date": "1945-06-21",
     "summary": "Passed through on route to Berlin. Like Wesel, 'a heap of rubble' from Allied bombing. Buildings a mass of twisted metal and steel.",
     "keywords": [
       "Munster",
@@ -758,6 +1003,8 @@
     "lng": 8.5325,
     "country": "Germany",
     "date_range": "June 1945",
+    "start_date": "1945-06-21",
+    "end_date": "1945-06-23",
     "summary": "Stayed two nights in German barracks, sleeping on the floor. Fleas in the rooms made it unpleasant.",
     "keywords": [
       "Bielefeld",
@@ -772,6 +1019,8 @@
     "lng": 10.5268,
     "country": "Germany",
     "date_range": "June 1945",
+    "start_date": "1945-06-23",
+    "end_date": "1945-06-30",
     "summary": "Stayed about a week in German barracks. Built outdoor cooking places of bricks and mud while other regiments practiced for the march past Berlin.",
     "keywords": [
       "Brunswick",
@@ -786,6 +1035,8 @@
     "lng": 9.732,
     "country": "Germany",
     "date_range": "June-July 1945",
+    "start_date": "1945-06-21",
+    "end_date": "1945-07-15",
     "summary": "Transit point on the journey to and from Berlin. Passed through multiple times during movements.",
     "keywords": [
       "Hanover"
@@ -799,6 +1050,8 @@
     "lng": 13.405,
     "country": "Germany",
     "date_range": "July 1945 - February 1946",
+    "start_date": "1945-07-01",
+    "end_date": "1946-02-13",
     "summary": "Final posting. Billeted in a house with flats and the best bed in his army career. Visited the Olympic Stadium. City in ruins - 'smelt the whiff of dead people buried in the rubble.'",
     "keywords": [
       "Berlin"
@@ -812,12 +1065,386 @@
     "lng": 1.3134,
     "country": "England",
     "date_range": "February 1946",
+    "start_date": "1946-02-16",
+    "end_date": "1946-02-16",
     "summary": "Port of return to England. Final leg of the journey home after demobilization from Berlin.",
     "keywords": [
       "Dover"
     ]
   }
 ];
+        const timeline = {
+  "events": [
+    {
+      "id": "dday",
+      "name": "D-Day (Operation Overlord)",
+      "date": "1944-06-06",
+      "end_date": null,
+      "type": "historical",
+      "description": "Allied invasion of Normandy begins. The largest seaborne invasion in history.",
+      "source": "https://en.wikipedia.org/wiki/Normandy_landings",
+      "related_places": [
+        "crepon",
+        "le_hamel",
+        "arromanches"
+      ]
+    },
+    {
+      "id": "edgar_lands",
+      "name": "Edgar lands in France",
+      "date": "1944-06-07",
+      "end_date": null,
+      "type": "diary",
+      "description": "Edgar arrives at Crepon gun site at 12:45am, D-Day+1. First night on French soil.",
+      "source": "diary",
+      "related_places": [
+        "crepon",
+        "le_hamel"
+      ]
+    },
+    {
+      "id": "caen_bombing",
+      "name": "Bombing of Caen",
+      "date": "1944-07-08",
+      "end_date": null,
+      "type": "historical",
+      "description": "Over 500 Lancasters and Halifaxes bomb Caen. Edgar witnessed this 'great sight' from his position.",
+      "source": "https://en.wikipedia.org/wiki/Operation_Charnwood",
+      "related_places": [
+        "caen",
+        "crepon"
+      ]
+    },
+    {
+      "id": "liberation_cherbourg",
+      "name": "Liberation of Cherbourg",
+      "date": "1944-06-26",
+      "end_date": "1944-06-27",
+      "type": "historical",
+      "description": "Major port of Cherbourg captured by US forces, providing crucial supply capabilities.",
+      "source": "https://en.wikipedia.org/wiki/Battle_of_Cherbourg",
+      "related_places": []
+    },
+    {
+      "id": "falaise_pocket",
+      "name": "Falaise Pocket closes",
+      "date": "1944-08-21",
+      "end_date": null,
+      "type": "historical",
+      "description": "German forces trapped and destroyed in the Falaise Pocket, ending the Battle of Normandy.",
+      "source": "https://en.wikipedia.org/wiki/Falaise_pocket",
+      "related_places": [
+        "falaise",
+        "argentan"
+      ]
+    },
+    {
+      "id": "liberation_paris",
+      "name": "Liberation of Paris",
+      "date": "1944-08-25",
+      "end_date": null,
+      "type": "historical",
+      "description": "Paris liberated after four years of German occupation.",
+      "source": "https://en.wikipedia.org/wiki/Liberation_of_Paris",
+      "related_places": []
+    },
+    {
+      "id": "edgar_leaves_normandy",
+      "name": "Edgar leaves Normandy",
+      "date": "1944-08-31",
+      "end_date": null,
+      "type": "diary",
+      "description": "200-mile journey from Crepon through devastated Falaise to Amiens.",
+      "source": "diary",
+      "related_places": [
+        "crepon",
+        "falaise",
+        "argentan",
+        "laigle",
+        "amiens"
+      ]
+    },
+    {
+      "id": "liberation_brussels",
+      "name": "Liberation of Brussels",
+      "date": "1944-09-03",
+      "end_date": null,
+      "type": "historical",
+      "description": "Brussels liberated by British forces.",
+      "source": "https://en.wikipedia.org/wiki/Liberation_of_Belgium",
+      "related_places": [
+        "brussels"
+      ]
+    },
+    {
+      "id": "liberation_antwerp",
+      "name": "Liberation of Antwerp",
+      "date": "1944-09-04",
+      "end_date": null,
+      "type": "historical",
+      "description": "Antwerp liberated, though the port would not be usable until the Scheldt was cleared.",
+      "source": "https://en.wikipedia.org/wiki/Antwerp_in_World_War_II",
+      "related_places": [
+        "antwerp"
+      ]
+    },
+    {
+      "id": "calais_bombing",
+      "name": "Bombing of Calais",
+      "date": "1944-09-26",
+      "end_date": null,
+      "type": "diary",
+      "description": "Edgar watched Lancasters and Halifaxes bombing Calais from Boulogne with no opposition.",
+      "source": "diary",
+      "related_places": [
+        "boulogne",
+        "calais"
+      ]
+    },
+    {
+      "id": "edgar_birthday",
+      "name": "Edgar's birthday in Belgium",
+      "date": "1944-10-17",
+      "end_date": null,
+      "type": "diary",
+      "description": "Edgar arrives in Bruges on his birthday despite terrible weather.",
+      "source": "diary",
+      "related_places": [
+        "bruges"
+      ]
+    },
+    {
+      "id": "scheldt_battle",
+      "name": "Battle of the Scheldt",
+      "date": "1944-10-02",
+      "end_date": "1944-11-08",
+      "type": "historical",
+      "description": "Allied campaign to open shipping route to Antwerp. Edgar's unit fired at German positions at Knokke.",
+      "source": "https://en.wikipedia.org/wiki/Battle_of_the_Scheldt",
+      "related_places": [
+        "knokke",
+        "goes",
+        "zuid_beveland"
+      ]
+    },
+    {
+      "id": "edgar_zuid_beveland",
+      "name": "Edgar arrives at Zuid Beveland",
+      "date": "1944-11-04",
+      "end_date": null,
+      "type": "diary",
+      "description": "Gun position on a bleak dyke in front of the sea. Very cold winter ahead.",
+      "source": "diary",
+      "related_places": [
+        "zuid_beveland",
+        "goes"
+      ]
+    },
+    {
+      "id": "bulge_starts",
+      "name": "Battle of the Bulge begins",
+      "date": "1944-12-16",
+      "end_date": null,
+      "type": "historical",
+      "description": "Last major German offensive on the Western Front.",
+      "source": "https://en.wikipedia.org/wiki/Battle_of_the_Bulge",
+      "related_places": []
+    },
+    {
+      "id": "bulge_ends",
+      "name": "Battle of the Bulge ends",
+      "date": "1945-01-25",
+      "end_date": null,
+      "type": "historical",
+      "description": "German offensive repulsed with heavy losses on both sides.",
+      "source": "https://en.wikipedia.org/wiki/Battle_of_the_Bulge",
+      "related_places": []
+    },
+    {
+      "id": "edgar_first_leave",
+      "name": "Edgar's first leave",
+      "date": "1945-01-15",
+      "end_date": "1945-01-27",
+      "type": "diary",
+      "description": "Long-awaited leave to see Winnie. Hard seats and no heating on the train.",
+      "source": "diary",
+      "related_places": [
+        "middleton"
+      ]
+    },
+    {
+      "id": "edgar_brussels_leave",
+      "name": "48-hour leave in Brussels",
+      "date": "1945-02-18",
+      "end_date": "1945-02-20",
+      "type": "diary",
+      "description": "Stay at the Albert Hotel with conducted tour of the city. V-1 air raid warnings.",
+      "source": "diary",
+      "related_places": [
+        "brussels"
+      ]
+    },
+    {
+      "id": "rhine_crossing",
+      "name": "Crossing of the Rhine",
+      "date": "1945-03-22",
+      "end_date": "1945-03-24",
+      "type": "historical",
+      "description": "Allied forces cross the Rhine River into the German heartland.",
+      "source": "https://en.wikipedia.org/wiki/Operation_Plunder",
+      "related_places": [
+        "wesel"
+      ]
+    },
+    {
+      "id": "cease_firing",
+      "name": "Cease Firing order",
+      "date": "1945-04-17",
+      "end_date": null,
+      "type": "diary",
+      "description": "Edgar's unit receives Cease Firing order. End of AA operations.",
+      "source": "diary",
+      "related_places": [
+        "kapelle",
+        "nieuport"
+      ]
+    },
+    {
+      "id": "ve_day",
+      "name": "VE Day",
+      "date": "1945-05-08",
+      "end_date": null,
+      "type": "historical",
+      "description": "Victory in Europe. Edgar witnessed celebrations at Kapelle - sirens sounded after midnight.",
+      "source": "https://en.wikipedia.org/wiki/Victory_in_Europe_Day",
+      "related_places": [
+        "kapelle",
+        "antwerp"
+      ]
+    },
+    {
+      "id": "collaborators",
+      "name": "Ransacking of collaborators' houses",
+      "date": "1945-05-13",
+      "end_date": null,
+      "type": "diary",
+      "description": "Edgar witnessed crowds ransacking the houses of Nazi collaborators at Kapelle.",
+      "source": "diary",
+      "related_places": [
+        "kapelle"
+      ]
+    },
+    {
+      "id": "edgar_leaves_belgium",
+      "name": "Edgar leaves for Germany",
+      "date": "1945-06-21",
+      "end_date": null,
+      "type": "diary",
+      "description": "Journey to Berlin through devastated German cities. Wesel and Munster were 'heaps of rubble'.",
+      "source": "diary",
+      "related_places": [
+        "louvain",
+        "wesel",
+        "munster",
+        "bielefeld",
+        "brunswick"
+      ]
+    },
+    {
+      "id": "berlin_victory_parade",
+      "name": "Berlin Victory Parade",
+      "date": "1945-07-21",
+      "end_date": null,
+      "type": "historical",
+      "description": "Allied victory parade through Berlin. Other regiments practiced while Edgar's unit built cooking places.",
+      "source": "https://en.wikipedia.org/wiki/Berlin_Victory_Parade_of_1945",
+      "related_places": [
+        "berlin",
+        "brunswick"
+      ]
+    },
+    {
+      "id": "edgar_berlin",
+      "name": "Edgar arrives in Berlin",
+      "date": "1945-07-01",
+      "end_date": null,
+      "type": "diary",
+      "description": "Final posting. Best bed in his army career, but city in ruins with 'whiff of dead people'.",
+      "source": "diary",
+      "related_places": [
+        "berlin"
+      ]
+    },
+    {
+      "id": "japan_surrenders",
+      "name": "Japan surrenders (VJ Day)",
+      "date": "1945-08-15",
+      "end_date": null,
+      "type": "historical",
+      "description": "World War II officially ends with Japanese surrender.",
+      "source": "https://en.wikipedia.org/wiki/Victory_over_Japan_Day",
+      "related_places": []
+    },
+    {
+      "id": "edgar_demob",
+      "name": "Edgar leaves Berlin for demob",
+      "date": "1946-02-13",
+      "end_date": null,
+      "type": "diary",
+      "description": "Final journey home begins. Left Berlin Transit Camp at 7:40am.",
+      "source": "diary",
+      "related_places": [
+        "berlin",
+        "hanover"
+      ]
+    },
+    {
+      "id": "edgar_home",
+      "name": "Edgar arrives home",
+      "date": "1946-02-18",
+      "end_date": null,
+      "type": "diary",
+      "description": "Arrived home at 4:30am after long journey via Dover, Reading, Hereford, and Crewe.",
+      "source": "diary",
+      "related_places": [
+        "dover",
+        "middleton"
+      ]
+    }
+  ],
+  "metadata": {
+    "date_range": {
+      "start": "1943-12-01",
+      "end": "1946-02-18"
+    },
+    "last_updated": "2026-01-31",
+    "notes": "Timeline events derived from Edgar Hopkins' WW2 diary and historical sources. Dates cross-referenced with diary text where possible."
+  }
+};
+
+        // Date utilities
+        const minDate = new Date('1943-12-01');
+        const maxDate = new Date('1946-02-18');
+        const dateRange = maxDate - minDate;
+
+        function dateToTimestamp(dateStr) {
+            return new Date(dateStr).getTime();
+        }
+
+        function timestampToDate(ts) {
+            return new Date(ts);
+        }
+
+        function formatDate(date) {
+            const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                          'July', 'August', 'September', 'October', 'November', 'December'];
+            return months[date.getMonth()] + ' ' + date.getFullYear();
+        }
+
+        function dateToPercent(dateStr) {
+            const d = new Date(dateStr);
+            return ((d - minDate) / dateRange) * 100;
+        }
 
         // Country colors for markers
         const countryColors = {
@@ -839,6 +1466,7 @@
 
         // Store markers by place ID
         const markers = {};
+        const markerElements = {};
 
         // Create custom icon function
         function createIcon(color) {
@@ -923,31 +1551,217 @@
             });
         });
 
-        // Draw journey path
-        const journeyCoords = places
-            .filter(p => p.id !== 'middleton' && p.id !== 'southend') // Skip non-journey locations
-            .map(p => [p.lat, p.lng]);
-
-        // Create a simplified route (chronological order based on the array order)
+        // Journey route order (chronological)
         const routeOrder = [
             'southampton', 'crepon', 'le_hamel', 'arromanches', 'bayeux', 'creully', 'caen',
             'falaise', 'argentan', 'laigle', 'amiens', 'boulogne', 'desvres', 'calais',
-            'bruges', 'knokke', 'kapelle', 'antwerp', 'nieuport', 'goes', 'zuid_beveland',
-            'middelburg', 'louvain', 'brussels', 'namur', 'wesel', 'munster', 'bielefeld',
-            'brunswick', 'hanover', 'berlin', 'dover', 'middleton'
+            'bruges', 'knokke', 'goes', 'zuid_beveland', 'middelburg',
+            'brussels', 'nieuport', 'antwerp', 'kapelle', 'namur', 'louvain',
+            'wesel', 'munster', 'bielefeld', 'brunswick', 'hanover', 'berlin', 'dover'
         ];
 
-        const routeCoords = routeOrder
+        // Create journey segments with date info
+        const journeySegments = [];
+        const routePlaces = routeOrder
             .map(id => places.find(p => p.id === id))
-            .filter(p => p)
-            .map(p => [p.lat, p.lng]);
+            .filter(p => p && p.start_date);
 
-        L.polyline(routeCoords, {
-            color: '#8b4513',
-            weight: 2,
-            opacity: 0.5,
-            dashArray: '5, 10'
-        }).addTo(map);
+        for (let i = 0; i < routePlaces.length - 1; i++) {
+            const from = routePlaces[i];
+            const to = routePlaces[i + 1];
+            const segmentDate = to.start_date; // Use arrival date for segment
+
+            const polyline = L.polyline([
+                [from.lat, from.lng],
+                [to.lat, to.lng]
+            ], {
+                color: '#8b4513',
+                weight: 2,
+                opacity: 0.5,
+                dashArray: '5, 10',
+                className: 'journey-segment'
+            }).addTo(map);
+
+            journeySegments.push({
+                polyline: polyline,
+                date: segmentDate,
+                from: from.id,
+                to: to.id
+            });
+        }
+
+        // Initialize timeline slider
+        const slider = document.getElementById('timeline-slider');
+        noUiSlider.create(slider, {
+            start: [minDate.getTime(), maxDate.getTime()],
+            connect: true,
+            range: {
+                'min': minDate.getTime(),
+                'max': maxDate.getTime()
+            },
+            step: 24 * 60 * 60 * 1000 // 1 day
+        });
+
+        // Event markers
+        const eventMarkersContainer = document.getElementById('event-markers');
+        timeline.events.forEach(event => {
+            const percent = dateToPercent(event.date);
+            if (percent >= 0 && percent <= 100) {
+                const dot = document.createElement('div');
+                dot.className = `event-dot ${event.type}`;
+                dot.style.left = `${percent}%`;
+                dot.innerHTML = `<div class="event-tooltip">${event.name}<br><small>${event.date}</small></div>`;
+                dot.addEventListener('click', () => {
+                    const eventDate = new Date(event.date).getTime();
+                    const rangeWidth = 30 * 24 * 60 * 60 * 1000; // 30 days window
+                    slider.noUiSlider.set([eventDate - rangeWidth/2, eventDate + rangeWidth/2]);
+                });
+                eventMarkersContainer.appendChild(dot);
+            }
+        });
+
+        // Update display based on slider
+        function updateTimeline(values) {
+            const startTs = parseInt(values[0]);
+            const endTs = parseInt(values[1]);
+            const startDate = timestampToDate(startTs);
+            const endDate = timestampToDate(endTs);
+
+            // Update date display
+            document.getElementById('date-display').textContent =
+                formatDate(startDate) + ' - ' + formatDate(endDate);
+
+            // Filter markers
+            places.forEach(place => {
+                const marker = markers[place.id];
+                if (!marker) return;
+
+                const markerEl = marker.getElement();
+                if (!markerEl) return;
+
+                // Check if place is within date range
+                let visible = false;
+                if (place.start_date === null) {
+                    // Home (Middleton) - always visible
+                    visible = true;
+                } else {
+                    const placeStart = new Date(place.start_date).getTime();
+                    const placeEnd = new Date(place.end_date).getTime();
+                    // Show if any overlap with selected range
+                    visible = placeStart <= endTs && placeEnd >= startTs;
+                }
+
+                if (visible) {
+                    markerEl.classList.remove('marker-dimmed');
+                    markerEl.style.opacity = '1';
+                } else {
+                    markerEl.classList.add('marker-dimmed');
+                    markerEl.style.opacity = '0.2';
+                }
+            });
+
+            // Filter journey segments
+            journeySegments.forEach(segment => {
+                const segmentDate = new Date(segment.date).getTime();
+                if (segmentDate <= endTs && segmentDate >= startTs) {
+                    segment.polyline.setStyle({ opacity: 0.7 });
+                } else if (segmentDate <= endTs) {
+                    segment.polyline.setStyle({ opacity: 0.3 });
+                } else {
+                    segment.polyline.setStyle({ opacity: 0.1 });
+                }
+            });
+
+            // Dim text locations outside date range
+            document.querySelectorAll('.location').forEach(span => {
+                const placeId = span.dataset.placeId;
+                const place = places.find(p => p.id === placeId);
+                if (!place) return;
+
+                let visible = false;
+                if (place.start_date === null) {
+                    visible = true;
+                } else {
+                    const placeStart = new Date(place.start_date).getTime();
+                    const placeEnd = new Date(place.end_date).getTime();
+                    visible = placeStart <= endTs && placeEnd >= startTs;
+                }
+
+                if (visible) {
+                    span.classList.remove('dimmed');
+                } else {
+                    span.classList.add('dimmed');
+                }
+            });
+        }
+
+        slider.noUiSlider.on('update', updateTimeline);
+
+        // Quick jump buttons
+        document.getElementById('btn-dday').addEventListener('click', () => {
+            const ddayDate = new Date('1944-06-06').getTime();
+            const rangeWidth = 60 * 24 * 60 * 60 * 1000; // 60 days
+            slider.noUiSlider.set([ddayDate - 7 * 24 * 60 * 60 * 1000, ddayDate + rangeWidth]);
+        });
+
+        document.getElementById('btn-veday').addEventListener('click', () => {
+            const vedayDate = new Date('1945-05-08').getTime();
+            const rangeWidth = 30 * 24 * 60 * 60 * 1000; // 30 days
+            slider.noUiSlider.set([vedayDate - rangeWidth/2, vedayDate + rangeWidth/2]);
+        });
+
+        document.getElementById('btn-full').addEventListener('click', () => {
+            slider.noUiSlider.set([minDate.getTime(), maxDate.getTime()]);
+        });
+
+        // Play animation
+        let isPlaying = false;
+        let animationFrame = null;
+        const playBtn = document.getElementById('play-btn');
+
+        function animate() {
+            const values = slider.noUiSlider.get();
+            const currentEnd = parseInt(values[1]);
+            const step = 7 * 24 * 60 * 60 * 1000; // 1 week per frame
+
+            if (currentEnd < maxDate.getTime()) {
+                const newEnd = Math.min(currentEnd + step, maxDate.getTime());
+                slider.noUiSlider.set([minDate.getTime(), newEnd]);
+                animationFrame = setTimeout(animate, 100);
+            } else {
+                stopAnimation();
+            }
+        }
+
+        function startAnimation() {
+            isPlaying = true;
+            playBtn.innerHTML = '&#10074;&#10074;'; // Pause icon
+            playBtn.classList.add('active');
+            // Reset to start
+            slider.noUiSlider.set([minDate.getTime(), minDate.getTime() + 30 * 24 * 60 * 60 * 1000]);
+            animate();
+        }
+
+        function stopAnimation() {
+            isPlaying = false;
+            playBtn.innerHTML = '&#9658;'; // Play icon
+            playBtn.classList.remove('active');
+            if (animationFrame) {
+                clearTimeout(animationFrame);
+                animationFrame = null;
+            }
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                stopAnimation();
+            } else {
+                startAnimation();
+            }
+        });
+
+        // Initial update
+        updateTimeline([minDate.getTime(), maxDate.getTime()]);
     </script>
 </body>
 </html>

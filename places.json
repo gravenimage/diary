@@ -8,6 +8,8 @@
       "lng": -1.4044,
       "country": "England",
       "date_range": "May 22 - June 1, 1944",
+      "start_date": "1944-05-22",
+      "end_date": "1944-06-01",
       "summary": "Embarkation point for the invasion. Stayed in a camp in the woods awaiting D-Day, the camp was sealed on May 27th preventing any further leave.",
       "keywords": ["Southampton"]
     },
@@ -19,6 +21,8 @@
       "lng": 0.7077,
       "country": "England",
       "date_range": "Late 1943 - May 1944",
+      "start_date": "1943-12-01",
+      "end_date": "1944-05-21",
       "summary": "Pre-invasion station where Edgar spent five months. Made friends with Mrs Woodlands and hoped to have Winnie visit before deployment.",
       "keywords": ["Southend"]
     },
@@ -30,6 +34,8 @@
       "lng": -1.9761,
       "country": "England",
       "date_range": "Home",
+      "start_date": null,
+      "end_date": null,
       "summary": "Edgar's home town. The bells of Crepon Church reminded him of those at Middleton. Home to Winnie and his family.",
       "keywords": ["Middleton"]
     },
@@ -41,6 +47,8 @@
       "lng": -0.5333,
       "country": "France",
       "date_range": "June 7 - August 31, 1944",
+      "start_date": "1944-06-07",
+      "end_date": "1944-08-31",
       "summary": "First gun position after D-Day landing. Defended the beach head with AA guns against heavy night raids. Visited the church and village cinema during rest periods.",
       "keywords": ["Crepon", "Crepon"]
     },
@@ -52,6 +60,8 @@
       "lng": -0.6111,
       "country": "France",
       "date_range": "June 1944",
+      "start_date": "1944-06-07",
+      "end_date": "1944-06-30",
       "summary": "Small village near the landing beach, badly damaged during the assault. One of the villages that 'caught the full blast' of D-Day.",
       "keywords": ["Le Hamel", "Hamel"]
     },
@@ -63,6 +73,8 @@
       "lng": -0.7024,
       "country": "France",
       "date_range": "July 17, 1944",
+      "start_date": "1944-07-17",
+      "end_date": "1944-07-17",
       "summary": "First visit on July 17th. Found the cathedral beautiful but the town had narrow streets and unpleasant smells. Bought red butter and cheese at 400 francs.",
       "keywords": ["Bayeux"]
     },
@@ -74,6 +86,8 @@
       "lng": -0.3707,
       "country": "France",
       "date_range": "July 1944",
+      "start_date": "1944-07-08",
+      "end_date": "1944-07-31",
       "summary": "Major bombing target. Witnessed over 500 Lancasters and Halifaxes bomb the city on July 8th. A recreation shed was salvaged from a site near Caen.",
       "keywords": ["Caen"]
     },
@@ -85,6 +99,8 @@
       "lng": -0.6228,
       "country": "France",
       "date_range": "August 1944",
+      "start_date": "1944-08-01",
+      "end_date": "1944-08-31",
       "summary": "Beach unloading work helping with the Mulberry harbour operations. Enjoyed swimming at the same beach where they landed on D-Day. Saw graves of fallen soldiers.",
       "keywords": ["Arromanches"]
     },
@@ -96,6 +112,8 @@
       "lng": -0.5347,
       "country": "France",
       "date_range": "July-August 1944",
+      "start_date": "1944-07-01",
+      "end_date": "1944-08-31",
       "summary": "About 5 miles from Crepon. Visited for the first ENSA show in France. Had coffee in a fly-filled cafe and bought butter from a local farm.",
       "keywords": ["Creully", "Cruelly"]
     },
@@ -107,6 +125,8 @@
       "lng": -0.1967,
       "country": "France",
       "date_range": "August 31, 1944",
+      "start_date": "1944-08-31",
+      "end_date": "1944-08-31",
       "summary": "Passed through on the 200-mile journey from Crepon. 'Very badly knocked about' - one heap of rubble from Allied bombing.",
       "keywords": ["Falaise"]
     },
@@ -118,6 +138,8 @@
       "lng": -0.0194,
       "country": "France",
       "date_range": "August 31, 1944",
+      "start_date": "1944-08-31",
+      "end_date": "1944-08-31",
       "summary": "Route marker on the journey from Normandy to Amiens. Part of the 200-mile convoy move.",
       "keywords": ["Argentan", "Argatan"]
     },
@@ -129,6 +151,8 @@
       "lng": 0.6264,
       "country": "France",
       "date_range": "August 31, 1944",
+      "start_date": "1944-08-31",
+      "end_date": "1944-08-31",
       "summary": "Route marker on the journey to Amiens. The people further inland were 'very pleased to see the British' compared to the dour Normandy folk.",
       "keywords": ["L'Aigle", "Laigle", "l'Aigle"]
     },
@@ -140,6 +164,8 @@
       "lng": 2.2958,
       "country": "France",
       "date_range": "September 2-23, 1944",
+      "start_date": "1944-09-02",
+      "end_date": "1944-09-23",
       "summary": "Gun position on high chalky ground with the beautiful cathedral as a landmark. Had a night out enjoying cafes with accordion music. FFI rounding up snipers in the woods.",
       "keywords": ["Amiens", "Amens"]
     },
@@ -151,6 +177,8 @@
       "lng": 1.6147,
       "country": "France",
       "date_range": "September 24 - October 16, 1944",
+      "start_date": "1944-09-24",
+      "end_date": "1944-10-16",
       "summary": "Stationed 2 miles from the devastated city. 'Never have I seen such places so badly bombed.' Buried a German officer and Canadian soldier. Could see the White Cliffs of Dover.",
       "keywords": ["Boulogne"]
     },
@@ -162,6 +190,8 @@
       "lng": 1.8587,
       "country": "France",
       "date_range": "September 26, 1944",
+      "start_date": "1944-09-26",
+      "end_date": "1944-09-26",
       "summary": "Watched Lancasters and Halifaxes bombing Calais from Boulogne with no opposition. Could see across to England's White Cliffs.",
       "keywords": ["Calais"]
     },
@@ -173,6 +203,8 @@
       "lng": 1.8333,
       "country": "France",
       "date_range": "October 9 & 14, 1944",
+      "start_date": "1944-10-09",
+      "end_date": "1944-10-14",
       "summary": "Out of bounds industrial town 10 miles away. Met George Ruffin, a friendly cycle shop owner who had saved whisky since 1940 for English soldiers.",
       "keywords": ["Desvres", "Devres"]
     },
@@ -184,6 +216,8 @@
       "lng": 3.2247,
       "country": "Belgium",
       "date_range": "October 17, 1944",
+      "start_date": "1944-10-17",
+      "end_date": "1944-10-17",
       "summary": "Arrived on Edgar's birthday in terrible weather. A big city with plenty in the shops. Went to pictures to see 'Alloah' and explored the city with Alec.",
       "keywords": ["Bruges"]
     },
@@ -195,6 +229,8 @@
       "lng": 3.2917,
       "country": "Belgium",
       "date_range": "October-November 1944",
+      "start_date": "1944-10-17",
+      "end_date": "1944-11-02",
       "summary": "Port where Germans held out. Guns used for ground shooting as field artillery, firing over 200 rounds to destroy German positions and ammo dumps.",
       "keywords": ["Knokke"]
     },
@@ -206,6 +242,8 @@
       "lng": 4.3517,
       "country": "Belgium",
       "date_range": "February 1945",
+      "start_date": "1945-02-18",
+      "end_date": "1945-02-20",
       "summary": "48-hour leave stay at the Albert Hotel. Took a conducted tour of the city. Air raid warnings from V-1 flying bombs but all clear soon followed.",
       "keywords": ["Brussels", "B'ham"]
     },
@@ -217,6 +255,8 @@
       "lng": 4.7005,
       "country": "Belgium",
       "date_range": "May 16 - June 21, 1945",
+      "start_date": "1945-05-16",
+      "end_date": "1945-06-21",
       "summary": "Transit camp in schools awaiting posting to Berlin. Pleasant walks, cinema visits, and befriended a jolly 60-year-old Belgian caretaker. Watched civilians dance to 'Tipperary'.",
       "keywords": ["Louvain", "Leuven"]
     },
@@ -228,6 +268,8 @@
       "lng": 4.4025,
       "country": "Belgium",
       "date_range": "April 1945",
+      "start_date": "1945-04-14",
+      "end_date": "1945-04-17",
       "summary": "Gun graveyard on an aerodrome where hundreds of 3.7 and Bofors guns were greased for storage. Enjoyed swimming baths and witnessed VE Day celebrations.",
       "keywords": ["Antwerp"]
     },
@@ -239,6 +281,8 @@
       "lng": 4.4167,
       "country": "Belgium",
       "date_range": "April 17 - May 1945",
+      "start_date": "1945-04-17",
+      "end_date": "1945-05-16",
       "summary": "8 miles from Antwerp. Witnessed VE Day here - sirens sounded after midnight. Saw civilians ransacking collaborators' houses on May 13th.",
       "keywords": ["Kapelle", "Kappelle", "Kappelin", "Kappelln"]
     },
@@ -250,6 +294,8 @@
       "lng": 2.7506,
       "country": "Belgium",
       "date_range": "April 15-17, 1945",
+      "start_date": "1945-04-15",
+      "end_date": "1945-04-17",
       "summary": "Firing camp 10 miles from Ostende. Stationed in a big school with wooden beds. Guns put into action for practice before 'Cease Firing' order came through.",
       "keywords": ["Nieuport", "Niewport"]
     },
@@ -261,6 +307,8 @@
       "lng": 4.8720,
       "country": "Belgium",
       "date_range": "May 1945",
+      "start_date": "1945-05-16",
+      "end_date": "1945-05-16",
       "summary": "Brief stop at an American camp before being redirected to Louvain. Part of the usual army mix-up.",
       "keywords": ["Namur"]
     },
@@ -272,6 +320,8 @@
       "lng": 3.8889,
       "country": "Netherlands",
       "date_range": "November 3, 1944",
+      "start_date": "1944-11-03",
+      "end_date": "1944-11-03",
       "summary": "Rest stop to brew tea and eat biscuits and corned beef on the journey to Zuid Beveland.",
       "keywords": ["Goes"]
     },
@@ -283,6 +333,8 @@
       "lng": 3.9167,
       "country": "Netherlands",
       "date_range": "November 4, 1944 - April 1945",
+      "start_date": "1944-11-04",
+      "end_date": "1945-04-14",
       "summary": "Gun position on a dyke in front of the sea. Very bleak and cold. Slept in a big granary vacated by Germans. Buried an unknown artillery man washed up on shore.",
       "keywords": ["Zuid Beveland", "South Beueland", "South Beveland"]
     },
@@ -294,6 +346,8 @@
       "lng": 3.6136,
       "country": "Netherlands",
       "date_range": "1945",
+      "start_date": "1945-02-01",
+      "end_date": "1945-02-28",
       "summary": "Had a photograph taken here in new kit, which was sent home to Winnie.",
       "keywords": ["Middelburg", "Middleburg"]
     },
@@ -305,6 +359,8 @@
       "lng": 6.6228,
       "country": "Germany",
       "date_range": "June 21, 1945",
+      "start_date": "1945-06-21",
+      "end_date": "1945-06-21",
       "summary": "Crossed the Rhine here on a Royal Engineers bridge. 'A heap of rubble' - saw great locomotives tipped on end and burnt out railway carriages.",
       "keywords": ["Wesel"]
     },
@@ -316,6 +372,8 @@
       "lng": 7.6261,
       "country": "Germany",
       "date_range": "June 21, 1945",
+      "start_date": "1945-06-21",
+      "end_date": "1945-06-21",
       "summary": "Passed through on route to Berlin. Like Wesel, 'a heap of rubble' from Allied bombing. Buildings a mass of twisted metal and steel.",
       "keywords": ["Munster", "Munster"]
     },
@@ -327,6 +385,8 @@
       "lng": 8.5325,
       "country": "Germany",
       "date_range": "June 1945",
+      "start_date": "1945-06-21",
+      "end_date": "1945-06-23",
       "summary": "Stayed two nights in German barracks, sleeping on the floor. Fleas in the rooms made it unpleasant.",
       "keywords": ["Bielefeld", "Biefield"]
     },
@@ -338,6 +398,8 @@
       "lng": 10.5268,
       "country": "Germany",
       "date_range": "June 1945",
+      "start_date": "1945-06-23",
+      "end_date": "1945-06-30",
       "summary": "Stayed about a week in German barracks. Built outdoor cooking places of bricks and mud while other regiments practiced for the march past Berlin.",
       "keywords": ["Brunswick", "Braunschweig"]
     },
@@ -349,6 +411,8 @@
       "lng": 9.7320,
       "country": "Germany",
       "date_range": "June-July 1945",
+      "start_date": "1945-06-21",
+      "end_date": "1945-07-15",
       "summary": "Transit point on the journey to and from Berlin. Passed through multiple times during movements.",
       "keywords": ["Hanover"]
     },
@@ -360,6 +424,8 @@
       "lng": 13.4050,
       "country": "Germany",
       "date_range": "July 1945 - February 1946",
+      "start_date": "1945-07-01",
+      "end_date": "1946-02-13",
       "summary": "Final posting. Billeted in a house with flats and the best bed in his army career. Visited the Olympic Stadium. City in ruins - 'smelt the whiff of dead people buried in the rubble.'",
       "keywords": ["Berlin"]
     },
@@ -371,6 +437,8 @@
       "lng": 1.3134,
       "country": "England",
       "date_range": "February 1946",
+      "start_date": "1946-02-16",
+      "end_date": "1946-02-16",
       "summary": "Port of return to England. Final leg of the journey home after demobilization from Berlin.",
       "keywords": ["Dover"]
     }
