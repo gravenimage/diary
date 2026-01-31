@@ -395,12 +395,12 @@
             border-radius: 4px;
             overflow: hidden;
             background: #b8d4e8;
+            height: 200px;
         }
 
-        .event-panel-map svg {
+        .event-panel-map .leaflet-container {
+            height: 100%;
             width: 100%;
-            height: auto;
-            display: block;
         }
 
         .event-panel-summary {
@@ -1975,6 +1975,8 @@
         const eventPanel = document.getElementById('event-panel');
         const eventPanelOverlay = document.getElementById('event-panel-overlay');
         const eventPanelClose = document.getElementById('event-panel-close');
+        let miniMap = null;
+        let miniMapMarkers = [];
 
         function showEventPanel(event) {
             // Populate panel content
@@ -1986,13 +1988,86 @@
                 : event.date;
             document.getElementById('event-panel-date').textContent = dateStr;
 
-            // Show map if available
+            // Show panel first so the map container has dimensions
+            eventPanel.classList.add('open');
+            eventPanelOverlay.classList.add('open');
+
+            // Initialize or update mini map
             const mapContainer = document.getElementById('event-panel-map');
-            if (event.map_svg) {
-                mapContainer.innerHTML = event.map_svg;
-                mapContainer.style.display = 'block';
+
+            // Clean up existing mini map
+            if (miniMap) {
+                miniMap.remove();
+                miniMap = null;
+            }
+            miniMapMarkers = [];
+
+            // Create mini map
+            miniMap = L.map('event-panel-map', {
+                zoomControl: true,
+                attributionControl: false,
+                dragging: true,
+                scrollWheelZoom: false
+            });
+
+            // Add tile layer (same as main map)
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19
+            }).addTo(miniMap);
+
+            // Determine bounds for the map
+            let bounds = null;
+
+            if (event.map_bounds) {
+                // Use predefined bounds
+                bounds = L.latLngBounds(
+                    [event.map_bounds.south, event.map_bounds.west],
+                    [event.map_bounds.north, event.map_bounds.east]
+                );
+            }
+
+            // Add markers for related places
+            if (event.related_places && event.related_places.length > 0) {
+                const relatedCoords = [];
+                event.related_places.forEach(placeId => {
+                    const place = places.find(p => p.id === placeId);
+                    if (place) {
+                        relatedCoords.push([place.lat, place.lng]);
+                        const color = countryColors[place.country] || '#8b4513';
+                        const miniMarker = L.circleMarker([place.lat, place.lng], {
+                            radius: 8,
+                            fillColor: color,
+                            color: '#fff',
+                            weight: 2,
+                            opacity: 1,
+                            fillOpacity: 0.9
+                        }).addTo(miniMap);
+                        miniMarker.bindTooltip(place.display_name, {
+                            permanent: false,
+                            direction: 'top',
+                            offset: [0, -8]
+                        });
+                        miniMapMarkers.push(miniMarker);
+                    }
+                });
+
+                // If no predefined bounds, fit to markers
+                if (!bounds && relatedCoords.length > 0) {
+                    bounds = L.latLngBounds(relatedCoords);
+                    bounds = bounds.pad(0.3); // Add some padding
+                }
+            }
+
+            // Set the view
+            if (bounds) {
+                // Small delay to ensure container is rendered
+                setTimeout(() => {
+                    miniMap.fitBounds(bounds, { padding: [20, 20] });
+                    miniMap.invalidateSize();
+                }, 50);
             } else {
-                mapContainer.style.display = 'none';
+                // Default view of Western Europe
+                miniMap.setView([49.5, 2.5], 6);
             }
 
             // Show summary
@@ -2021,15 +2096,20 @@
             } else {
                 sourceEl.style.display = 'none';
             }
-
-            // Show panel
-            eventPanel.classList.add('open');
-            eventPanelOverlay.classList.add('open');
         }
 
         function hideEventPanel() {
             eventPanel.classList.remove('open');
             eventPanelOverlay.classList.remove('open');
+
+            // Clean up mini map after animation
+            setTimeout(() => {
+                if (miniMap) {
+                    miniMap.remove();
+                    miniMap = null;
+                }
+                miniMapMarkers = [];
+            }, 300);
         }
 
         // Panel close handlers
